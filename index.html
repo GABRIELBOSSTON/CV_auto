@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0" />
+  <title>CV Studio — Gabriel Hamonangan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --black: #000000;
+      --bg: #090909;
+      --s1: #111111;
+      --s2: #1a1a1a;
+      --s3: #222222;
+      --border: rgba(255, 255, 255, 0.06);
+      --border2: rgba(255, 255, 255, 0.12);
+      --border3: rgba(255, 255, 255, 0.2);
+      --text: #ffffff;
+      --muted: #888888;
+      --dim: #444444;
+      --accent: #ffffff;
+      --orange: #c45b1e;
+      --orange2: #e0713a;
+      --r: 4px;
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ━━ SCROLL REVEAL ━━ */
+    .reveal {
+      opacity: 0;
+      filter: blur(12px);
+      transform: translateY(24px);
+      transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        filter 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0)
+    }
+
+    .reveal-d1 {
+      transition-delay: 0.1s
+    }
+
+    .reveal-d2 {
+      transition-delay: 0.2s
+    }
+
+    .reveal-d3 {
+      transition-delay: 0.3s
+    }
+
+    .reveal-d4 {
+      transition-delay: 0.4s
+    }
+
+    .reveal-d5 {
+      transition-delay: 0.5s
+    }
+
+    /* ━━ NAV ━━ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 56px;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-logo .dot {
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border-radius: 1px;
+      display: inline-block;
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 4px
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 14px;
+      border-radius: 4px;
+      color: var(--muted);
+      font-size: 0.875rem;
+      font-weight: 400;
+      cursor: pointer;
+      transition: color 0.2s;
+      text-decoration: none;
+      background: transparent;
+      border: none;
+    }
+
+    .nav-item:hover {
+      color: var(--text)
+    }
+
+    .nav-item svg {
+      width: 12px;
+      height: 12px;
+      opacity: 0.6
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .nav-cta {
+      padding: 7px 18px;
+      border-radius: 99px;
+      border: 1px solid var(--border3);
+      background: transparent;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .nav-cta:hover {
+      background: rgba(255, 255, 255, 0.08)
+    }
+
+    .nav-back {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 18px;
+      border-radius: 99px;
+      border: 1px solid var(--border2);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-back:hover {
+      color: var(--text);
+      border-color: var(--border3)
+    }
+
+    .nav-back svg {
+      width: 14px;
+      height: 14px
+    }
+
+    /* ━━ PAGES ━━ */
+    .page {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+      padding-top: 56px;
+      scroll-behavior: smooth;
+    }
+
+    .page.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(16px)
+    }
+
+    .page.slide-out {
+      opacity: 0;
+      transform: translateX(-32px)
+    }
+
+    .page.slide-in {
+      opacity: 0;
+      transform: translateX(32px)
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━
+   PAGE 1 — LANDING
+━━━━━━━━━━━━━━━━━━━ */
+    #pg-landing {
+      background: var(--black)
+    }
+
+    /* HERO */
+    .hero {
+      min-height: calc(100vh - 56px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 3D Cube */
+    .cube-wrap {
+      margin-bottom: 52px;
+      perspective: 600px;
+      animation: heroFadeIn 1s 0.1s ease both;
+    }
+
+    .cube {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: cubeSpin 18s linear infinite;
+    }
+
+    .cube-face {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backface-visibility: hidden;
+    }
+
+    .cf-front {
+      background: linear-gradient(135deg, #3a1a0a 0%, #c45b1e 50%, #8b3510 100%);
+      transform: translateZ(60px)
+    }
+
+    .cf-back {
+      background: linear-gradient(135deg, #8b3510 0%, #c45b1e 50%, #3a1a0a 100%);
+      transform: rotateY(180deg) translateZ(60px)
+    }
+
+    .cf-left {
+      background: linear-gradient(135deg, #2a1208 0%, #9d4a18 100%);
+      transform: rotateY(-90deg) translateZ(60px)
+    }
+
+    .cf-right {
+      background: linear-gradient(135deg, #9d4a18 0%, #2a1208 100%);
+      transform: rotateY(90deg) translateZ(60px)
+    }
+
+    .cf-top {
+      background: linear-gradient(135deg, #5a2510 0%, #c45b1e 100%);
+      transform: rotateX(90deg) translateZ(60px)
+    }
+
+    .cf-bottom {
+      background: linear-gradient(135deg, #c45b1e 0%, #5a2510 100%);
+      transform: rotateX(-90deg) translateZ(60px)
+    }
+
+    /* Glow under cube */
+    .cube-wrap::after {
+      content: '';
+      display: block;
+      width: 180px;
+      height: 40px;
+      margin: -20px auto 0;
+      background: radial-gradient(ellipse, rgba(196, 91, 30, 0.3) 0%, transparent 70%);
+      filter: blur(12px);
+    }
+
+    @keyframes cubeSpin {
+      0% {
+        transform: rotateX(15deg) rotateY(0deg)
+      }
+
+      100% {
+        transform: rotateX(15deg) rotateY(360deg)
+      }
+    }
+
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border2);
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      padding: 5px 16px;
+      border-radius: 99px;
+      margin-bottom: 28px;
+      animation: heroFadeIn 0.8s 0.2s ease both;
+    }
+
+    .hero-h1 {
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      animation: heroFadeIn 0.8s 0.3s ease both;
+    }
+
+    .hero-h1 em {
+      font-style: normal;
+      color: var(--text)
+    }
+
+    .hero-sub {
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      font-weight: 400;
+      max-width: 520px;
+      margin-inline: auto;
+      line-height: 1.7;
+      animation: heroFadeIn 0.8s 0.4s ease both;
+    }
+
+    .hero-btns {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+      animation: heroFadeIn 0.8s 0.5s ease both;
+    }
+
+    .btn-hero-primary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border-radius: 99px;
+      background: var(--text);
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #000;
+      letter-spacing: -0.01em;
+      transition: all 0.2s;
+    }
+
+    .btn-hero-primary:hover {
+      background: #e0e0e0;
+      transform: translateY(-1px)
+    }
+
+    .btn-hero-primary svg {
+      width: 16px;
+      height: 16px
+    }
+
+    .btn-hero-ghost {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border-radius: 99px;
+      background: transparent;
+      border: 1px solid var(--border3);
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.2s;
+    }
+
+    .btn-hero-ghost:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.3)
+    }
+
+    @keyframes heroFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    /* ━━ FEATURES 3-col ━━ */
+    .features-section {
+      padding: 100px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .feat-col {
+      padding: 48px 40px 48px 0;
+      border-right: 1px solid var(--border);
+    }
+
+    .feat-col:last-child {
+      border-right: none;
+      padding-right: 0;
+      padding-left: 40px
+    }
+
+    .feat-col:nth-child(2) {
+      padding-left: 40px
+    }
+
+    .feat-ico {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feat-ico svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--text)
+    }
+
+    .feat-t {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 12px;
+      letter-spacing: -0.02em
+    }
+
+    .feat-s {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 400
+    }
+
+    .feat-divider {
+      margin-top: 40px;
+      border-top: 1px solid var(--border)
+    }
+
+    /* ━━ PROMPT SECTION ━━ */
+    .prompt-section {
+      padding: 80px 40px 100px;
+      max-width: 1200px;
+      margin: 0 auto;
+      border-top: 1px solid var(--border);
+    }
+
+    .sect-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sect-label::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--dim);
+    }
+
+    .sect-h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .sect-h2 em {
+      font-style: normal;
+      color: var(--muted)
+    }
+
+    .prompt-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 48px;
+      align-items: start;
+    }
+
+    .prompt-left {}
+
+    .prompt-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 360px;
+      margin-bottom: 32px
+    }
+
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .step-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--dim);
+      padding-top: 2px;
+      flex-shrink: 0;
+      min-width: 20px;
+    }
+
+    .step-content {}
+
+    .step-t {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px
+    }
+
+    .step-s {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6
+    }
+
+    /* Prompt Card */
+    .p-card {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .p-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--s2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .p-dots {
+      display: flex;
+      gap: 5px
+    }
+
+    .pdot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%
+    }
+
+    .pd-r {
+      background: #ff5f57
+    }
+
+    .pd-y {
+      background: #febc2e
+    }
+
+    .pd-g {
+      background: #28c840
+    }
+
+    .p-fname {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-copy-sm {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border2);
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-copy-sm:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text)
+    }
+
+    .btn-copy-sm.ok {
+      background: rgba(40, 200, 90, 0.1);
+      border-color: rgba(40, 200, 90, 0.3);
+      color: #28c840
+    }
+
+    .p-body {
+      padding: 20px;
+      max-height: 360px;
+      overflow-y: auto
+    }
+
+    .p-body::-webkit-scrollbar {
+      width: 3px
+    }
+
+    .p-body::-webkit-scrollbar-thumb {
+      background: var(--dim);
+      border-radius: 3px
+    }
+
+    .p-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      line-height: 1.85;
+      color: #666;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .pk {
+      color: #8ab4f8
+    }
+
+    .pv {
+      color: #80cbc4
+    }
+
+    .pn {
+      color: #ce93d8
+    }
+
+    .pb {
+      color: #ffffff;
+      opacity: 0.8
+    }
+
+    /* CTA row */
+    .cta-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 99px;
+      background: var(--text);
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #000;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #e0e0e0;
+      transform: translateY(-1px)
+    }
+
+    .btn-primary svg {
+      width: 14px;
+      height: 14px
+    }
+
+    .btn-ghost {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 99px;
+      background: transparent;
+      border: 1px solid var(--border2);
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+
+    .btn-ghost:hover {
+      color: var(--text);
+      border-color: var(--border3)
+    }
+
+    .btn-ghost.ok {
+      color: #28c840;
+      border-color: rgba(40, 200, 90, 0.3)
+    }
+
+    /* ━━ TRUSTED ━━ */
+    .trusted-section {
+      padding: 60px 40px 80px;
+      border-top: 1px solid var(--border);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .trusted-lbl {
+      font-size: 0.8rem;
+      color: var(--dim);
+      margin-bottom: 32px;
+      letter-spacing: 0.05em
+    }
+
+    .trusted-logos {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap
+    }
+
+    .tlogo {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--dim);
+      letter-spacing: -0.01em;
+      transition: color 0.2s;
+      white-space: nowrap;
+      cursor: default;
+    }
+
+    .tlogo:hover {
+      color: var(--muted)
+    }
+
+    /* ━━ FOOTER ━━ */
+    .foot {
+      padding: 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .foot-logo {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .foot-logo .dot {
+      width: 8px;
+      height: 8px;
+      background: #fff;
+      border-radius: 1px;
+      display: inline-block
+    }
+
+    .foot-info {
+      font-size: 0.75rem;
+      color: var(--dim);
+      text-align: right;
+      line-height: 1.6
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━
+   PAGE 2 — TOOL
+━━━━━━━━━━━━━━━━━━━ */
+    #pg-tool {
+      background: var(--black);
+      overflow: hidden
+    }
+
+    .tool-wrap {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      height: calc(100vh - 56px);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* LEFT */
+    .t-left {
+      display: flex;
+      flex-direction: column;
+      background: var(--s1);
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .t-left-head {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .t-section-lbl {
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 4px;
+      display: block;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .t-left-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em
+    }
+
+    .t-editor-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 0 16px 12px
+    }
+
+    .t-editor-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0 8px;
+    }
+
+    .t-dots {
+      display: flex;
+      gap: 5px
+    }
+
+    .tdot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%
+    }
+
+    .td-r {
+      background: #ff5f57
+    }
+
+    .td-y {
+      background: #febc2e
+    }
+
+    .td-g {
+      background: #28c840
+    }
+
+    .t-lang {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--dim)
+    }
+
+    #code-in {
+      flex: 1;
+      width: 100%;
+      resize: none;
+      background: #050505;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: #666;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.71rem;
+      line-height: 1.65;
+      padding: 14px;
+      outline: none;
+      caret-color: var(--text);
+      transition: border-color 0.2s;
+    }
+
+    #code-in::placeholder {
+      color: var(--dim);
+      font-size: 0.7rem
+    }
+
+    #code-in:focus {
+      border-color: rgba(255, 255, 255, 0.15)
+    }
+
+    .t-char {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--dim);
+      text-align: right;
+      padding: 5px 0 0
+    }
+
+    .t-left-foot {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .t-btn-row {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .tbtn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: -0.01em;
+    }
+
+    .tbtn:disabled {
+      opacity: 0.25;
+      cursor: not-allowed
+    }
+
+    .tbtn-prev {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border2);
+      color: var(--text);
+    }
+
+    .tbtn-prev:not(:disabled):hover {
+      background: rgba(255, 255, 255, 0.1)
+    }
+
+    .tbtn-dl {
+      background: var(--text);
+      color: #000;
+      box-shadow: none;
+    }
+
+    .tbtn-dl:not(:disabled):hover {
+      background: #e0e0e0;
+      transform: translateY(-1px)
+    }
+
+    .tbtn-dl svg,
+    .tbtn-prev svg {
+      width: 14px;
+      height: 14px
+    }
+
+    .tbtn-clr {
+      flex: 0 0 auto;
+      width: 40px;
+      padding: 10px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .tbtn-clr:not(:disabled):hover {
+      border-color: rgba(255, 80, 80, 0.4);
+      color: rgba(255, 100, 100, 0.8)
+    }
+
+    .tbtn-clr:disabled {
+      opacity: 0.2;
+      cursor: not-allowed
+    }
+
+    .t-prog {
+      display: none;
+      flex-direction: column;
+      gap: 5px
+    }
+
+    .t-prog.show {
+      display: flex
+    }
+
+    .t-prog-lbl {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace
+    }
+
+    .t-prog-bg {
+      background: var(--s3);
+      border-radius: 99px;
+      height: 2px;
+      overflow: hidden
+    }
+
+    .t-prog-bar {
+      background: var(--text);
+      height: 100%;
+      width: 0%;
+      border-radius: 99px;
+      transition: width 0.3s
+    }
+
+    /* RIGHT */
+    .t-right {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg)
+    }
+
+    .t-preview-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--s1);
+      flex-shrink: 0;
+    }
+
+    .tpb-dots {
+      display: flex;
+      gap: 5px
+    }
+
+    .tpdot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%
+    }
+
+    .tpd-r {
+      background: #ff5f57
+    }
+
+    .tpd-y {
+      background: #febc2e
+    }
+
+    .tpd-g {
+      background: #28c840
+    }
+
+    .tpb-addr {
+      flex: 1;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.66rem;
+      color: var(--dim);
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 3px 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tpb-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.66rem;
+      color: var(--dim)
+    }
+
+    .t-stage {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 28px 20px;
+      background: #111;
+    }
+
+    .t-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .t-empty-ico {
+      width: 72px;
+      height: 72px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+    }
+
+    .t-empty-t {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--muted)
+    }
+
+    .t-empty-s {
+      font-size: 0.8rem;
+      color: var(--dim);
+      max-width: 220px;
+      line-height: 1.6
+    }
+
+    .t-frame-wrap {
+      display: none;
+      flex-shrink: 0;
+      width: min(794px, 100%);
+      border-radius: 2px;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+
+    .t-frame-wrap.show {
+      display: block
+    }
+
+    #pframe {
+      width: 794px;
+      min-height: 1123px;
+      border: none;
+      display: block;
+      background: #fff;
+      transform-origin: top left;
+    }
+
+    #rhost {
+      position: fixed;
+      left: -9999px;
+      top: 0;
+      width: 794px;
+      background: white;
+      z-index: -1;
+      overflow: visible
+    }
+
+    /* ━━ TOAST ━━ */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--s2);
+      border: 1px solid rgba(40, 200, 90, 0.3);
+      color: #28c840;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 11px 22px;
+      border-radius: 99px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1
+    }
+
+    /* ━━ RESPONSIVE ━━ */
+    @media(max-width:900px) {
+      .prompt-layout {
+        grid-template-columns: 1fr
+      }
+
+      .features-section,
+      .prompt-section {
+        padding-left: 24px;
+        padding-right: 24px
+      }
+
+      .foot {
+        padding: 32px 24px;
+        flex-direction: column;
+        gap: 16px;
+        text-align: center
+      }
+
+      .foot-info {
+        text-align: center
+      }
+    }
+
+    @media(max-width:680px) {
+      .feat-grid {
+        grid-template-columns: 1fr
+      }
+
+      .feat-col {
+        border-right: none;
+        padding: 32px 0;
+        border-top: 1px solid var(--border)
+      }
+
+      .feat-col:first-child {
+        border-top: none
+      }
+
+      .tool-wrap {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        height: auto
+      }
+
+      .t-left {
+        max-height: 52vh
+      }
+
+      .t-right {
+        min-height: 55vw
+      }
+
+      .nav {
+        padding: 0 20px
+      }
+
+      .hero {
+        padding: 60px 20px 48px
+      }
+
+      .hero-btns {
+        flex-direction: column
+      }
+
+      .btn-hero-primary,
+      .btn-hero-ghost {
+        width: 100%;
+        justify-content: center
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ━━ NAV ━━ -->
+  <nav class="nav">
+    <a class="nav-logo" href="#" onclick="goLanding(event)">
+      CV<span class="dot"></span>Studio
+    </a>
+    <div class="nav-center">
+      <a class="nav-item" href="#step01"
+        onclick="if(!document.getElementById('pg-tool').classList.contains('hidden')){ goLanding(); setTimeout(()=>document.getElementById('step01').scrollIntoView(), 350); }">Cara
+        Pakai</a>
+    </div>
+    <div class="nav-right">
+      <button class="nav-cta" onclick="goTool()">Buka Tool</button>
+      <button class="nav-back" id="nav-back" onclick="goLanding()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M5 12l7 7M5 12l7-7" />
+        </svg>
+        Kembali
+      </button>
+    </div>
+  </nav>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     PAGE 1 — LANDING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="page" id="pg-landing">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="cube-wrap">
+        <div class="cube">
+          <div class="cube-face cf-front"></div>
+          <div class="cube-face cf-back"></div>
+          <div class="cube-face cf-left"></div>
+          <div class="cube-face cf-right"></div>
+          <div class="cube-face cf-top"></div>
+          <div class="cube-face cf-bottom"></div>
+        </div>
+      </div>
+
+      <div class="hero-chip">The professional CV generator</div>
+
+      <h1 class="hero-h1">
+        Build CV you own.
+      </h1>
+
+      <p class="hero-sub">
+        CV Studio membantu kamu membuat CV profesional ATS-friendly salin prompt, generate di AI, lalu ekspor jadi PDF
+        dalam hitungan menit.
+      </p>
+
+      <div class="hero-btns">
+        <button class="btn-hero-primary" onclick="goTool()">
+          Buka PDF Exporter
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </button>
+        <button class="btn-hero-ghost" id="heroCopyBtn" onclick="doHeroCopy()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span id="heroCopyLbl">Salin Prompt</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features-section">
+      <div class="feat-grid">
+        <div class="feat-col reveal reveal-d1">
+          <div class="feat-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
+          </div>
+          <div class="feat-t">ATS-Friendly</div>
+          <div class="feat-s">Struktur bersih dan mudah terbaca oleh sistem rekrutmen otomatis. Dibuat sesuai standar
+            industri global.</div>
+          <div class="feat-divider"></div>
+        </div>
+        <div class="feat-col reveal reveal-d2">
+          <div class="feat-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <path d="M12 18v-6M9 15l3 3 3-3" />
+            </svg>
+          </div>
+          <div class="feat-t">Format A4 Siap Cetak</div>
+          <div class="feat-s">Layout dioptimalkan untuk kertas A4 dengan margin yang tepat. Ekspor langsung ke PDF
+            dengan satu klik.</div>
+          <div class="feat-divider"></div>
+        </div>
+        <div class="feat-col reveal reveal-d3">
+          <div class="feat-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+          </div>
+          <div class="feat-t">Paste & Export</div>
+          <div class="feat-s">Paste kode dari AI, preview instan, download — semua dari satu tab browser tanpa perlu
+            install apapun.</div>
+          <div class="feat-divider"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROMPT SECTION -->
+    <section class="prompt-section" id="step01">
+      <div class="sect-label reveal">Step 01</div>
+      <div class="sect-h2 reveal reveal-d1">
+        Full stack CV<br><em>generation.</em>
+      </div>
+
+      <div class="prompt-layout">
+        <div class="prompt-left reveal reveal-d2">
+          <p class="prompt-desc">
+            Salin prompt di bawah, tempel ke AI favorit kamu (Claude, ChatGPT, Gemini), lalu isi data pribadimu.
+            Dapatkan kode HTML CV yang siap dipakai dalam detik.
+          </p>
+
+          <div class="steps-list">
+            <div class="step-item">
+              <div class="step-num">01</div>
+              <div class="step-content">
+                <div class="step-t">Salin prompt</div>
+                <div class="step-s">Klik tombol salin di bawah, prompt sudah terformat siap pakai.</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">02</div>
+              <div class="step-content">
+                <div class="step-t">Generate di AI</div>
+                <div class="step-s">Paste ke Claude / ChatGPT / Gemini, isi data pribadimu, jalankan.</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">03</div>
+              <div class="step-content">
+                <div class="step-t">Paste & Export PDF</div>
+                <div class="step-s">Buka PDF Exporter, paste kode HTML, preview, download jadi PDF.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cta-row" style="margin-top:32px">
+            <button class="btn-primary" onclick="goTool()">
+              Buka PDF Exporter
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </button>
+            <button class="btn-ghost" id="sectCopyBtn" onclick="doSectCopy()">
+              <span id="sectCopyLbl">Salin Prompt</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="reveal reveal-d3">
+          <div class="p-card">
+            <div class="p-topbar">
+              <div class="p-dots">
+                <div class="pdot pd-r"></div>
+                <div class="pdot pd-y"></div>
+                <div class="pdot pd-g"></div>
+              </div>
+              <div class="p-fname">cv-prompt.txt</div>
+              <button class="btn-copy-sm" id="copySmBtn" onclick="doSmCopy()">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span id="copySmLbl">Copy</span>
+              </button>
+            </div>
+            <div class="p-body">
+              <pre class="p-text"><span class="pb">Buatkan file HTML lengkap untuk CV profesional ATS-friendly format kertas A4.</span>
+<span class="pk">Data:</span>
+
+<span class="pv">* Nama:</span> [nama lengkap kamu]
+<span class="pv">* Kontak:</span> [kota], [email], [LinkedIn URL]
+
+<span class="pk">Ketentuan desain:</span>
+
+<span class="pv">* Font:</span> Times New Roman
+<span class="pv">* Warna:</span> hitam putih saja
+<span class="pv">* Padding kertas:</span> 20mm semua sisi
+<span class="pv">* Layout setiap pengalaman:</span> baris atas bold (nama institusi | kota), baris bawah italic (posisi | tanggal), lalu bullet points
+<span class="pv">* Setiap section title pakai</span> border-bottom hitam dan huruf kapital
+<span class="pv">* Ada @media print:</span> margin 15mm 20mm, hilangkan shadow dan elemen no-print
+
+<span class="pk">Section yang dibutuhkan (urutan ini):</span>
+
+<span class="pn">1.</span> Summary — 3-4 kalimat tentang background dan passion
+<span class="pn">2.</span> Education — [isi data pendidikan]
+<span class="pn">3.</span> Internship &amp; Work Experience — [isi pengalaman kerja]
+<span class="pn">4.</span> Organizational Experience — [isi organisasi]
+<span class="pn">5.</span> Achievements &amp; Awards — [isi prestasi]
+<span class="pn">6.</span> Certifications &amp; Training — [isi sertifikasi]</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="border-top:1px solid var(--border)">
+      <div class="foot reveal">
+        <div class="foot-logo">
+          CV<span class="dot"></span>Studio
+        </div>
+        <div class="foot-info">
+          <div style="color:var(--muted);font-size:0.8rem;font-weight:500">Gabriel Hamonangan</div>
+          <div>Informatics · President University · Cikarang</div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     PAGE 2 — TOOL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="page hidden" id="pg-tool">
+    <div class="tool-wrap">
+
+      <!-- LEFT -->
+      <div class="t-left">
+        <div class="t-left-head">
+          <span class="t-section-lbl">Step 02</span>
+          <div class="t-left-title">Paste kode HTML CV kamu</div>
+        </div>
+        <div class="t-editor-area">
+          <div class="t-editor-bar">
+            <div class="t-dots">
+              <div class="tdot td-r"></div>
+              <div class="tdot td-y"></div>
+              <div class="tdot td-g"></div>
+            </div>
+            <span class="t-lang">HTML · CV Output</span>
+          </div>
+          <textarea id="code-in" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"
+            placeholder="<!DOCTYPE html>&#10;<html>&#10;  ...paste kode HTML CV dari AI di sini...&#10;</html>"></textarea>
+          <div class="t-char"><span id="t-chars">0</span> chars</div>
+        </div>
+        <div class="t-left-foot">
+          <div class="t-btn-row">
+            <button class="tbtn tbtn-prev" id="btn-prev" disabled onclick="doPreview()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              Preview
+            </button>
+            <button class="tbtn tbtn-dl" id="btn-dl" disabled onclick="doDL()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              <span id="dl-lbl">Download PDF</span>
+            </button>
+            <button class="tbtn-clr" id="btn-clr" disabled title="Hapus" onclick="doClear()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-1 14H6L5 6" />
+                <path d="M10 11v6M14 11v6" />
+              </svg>
+            </button>
+          </div>
+          <div class="t-prog" id="t-prog">
+            <div class="t-prog-lbl" id="t-prog-lbl">Memproses…</div>
+            <div class="t-prog-bg">
+              <div class="t-prog-bar" id="t-prog-bar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="t-right">
+        <div class="t-preview-bar">
+          <div class="tpb-dots">
+            <div class="tpdot tpd-r"></div>
+            <div class="tpdot tpd-y"></div>
+            <div class="tpdot tpd-g"></div>
+          </div>
+          <div class="tpb-addr" id="tpb-addr">cv-preview://paste-html-above</div>
+          <div class="tpb-tag">A4 · 210×297mm</div>
+        </div>
+        <div class="t-stage">
+          <div class="t-empty" id="t-empty">
+            <div class="t-empty-ico">📋</div>
+            <div class="t-empty-t">Belum ada preview</div>
+            <div class="t-empty-s">Paste kode HTML CV di panel kiri, lalu tekan Preview.</div>
+          </div>
+          <div class="t-frame-wrap" id="t-frame-wrap">
+            <iframe id="pframe" sandbox="allow-same-origin allow-scripts" title="CV Preview"></iframe>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="rhost"></div>
+
+  <div class="toast" id="toast">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+    <span id="toast-msg">Tersalin!</span>
+  </div>
+
+  <script>
+    const { jsPDF } = window.jspdf;
+
+    /* ━━ SCROLL REVEAL ━━ */
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    function initReveal() {
+      document.querySelectorAll('.reveal').forEach(el => {
+        revealObserver.observe(el);
+      });
+    }
+    document.addEventListener('DOMContentLoaded', initReveal);
+    setTimeout(initReveal, 100);
+
+    /* ━━ ROUTING ━━ */
+    const pgLanding = document.getElementById('pg-landing');
+    const pgTool = document.getElementById('pg-tool');
+    const navBack = document.getElementById('nav-back');
+
+    function goTool() {
+      pgLanding.classList.add('slide-out');
+      setTimeout(() => {
+        pgLanding.classList.add('hidden');
+        pgLanding.classList.remove('slide-out');
+        pgTool.classList.remove('hidden', 'slide-in');
+        navBack.style.display = 'flex';
+        scaleFrame();
+      }, 300);
+    }
+    function goLanding(e) {
+      if (e) e.preventDefault();
+      pgTool.classList.add('slide-in');
+      setTimeout(() => {
+        pgTool.classList.add('hidden');
+        pgTool.classList.remove('slide-in');
+        pgLanding.classList.remove('hidden', 'slide-out');
+        navBack.style.display = 'none';
+      }, 300);
+    }
+
+    /* ━━ PROMPT ━━ */
+    const PROMPT = `Buatkan file HTML lengkap untuk CV profesional ATS-friendly format kertas A4.
+Data:
+
+* Nama: [nama lengkap kamu]
+* Kontak: [kota], [email], [LinkedIn URL]
+
+Ketentuan desain:
+
+* Font: Times New Roman
+* Warna: hitam putih saja
+* Padding kertas: 20mm semua sisi
+* Layout setiap pengalaman: baris atas bold (nama institusi | kota), baris bawah italic (posisi | tanggal), lalu bullet points
+* Setiap section title pakai border-bottom hitam dan huruf kapital
+* Ada @media print: margin 15mm 20mm, hilangkan shadow dan elemen no-print
+
+Section yang dibutuhkan (urutan ini):
+
+1. Summary — 3-4 kalimat tentang background dan passion
+2. Education — [isi data pendidikan]
+3. Internship & Work Experience — [isi pengalaman kerja]
+4. Organizational Experience — [isi organisasi]
+5. Achievements & Awards — [isi prestasi]
+6. Certifications & Training — [isi sertifikasi]`;
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2600);
+    }
+
+    function copyPrompt(btnId, lblId, newLbl, resetLbl) {
+      navigator.clipboard.writeText(PROMPT).then(() => {
+        const btn = document.getElementById(btnId);
+        const lbl = document.getElementById(lblId);
+        if (btn) btn.classList.add('ok');
+        if (lbl) lbl.textContent = newLbl;
+        showToast('Prompt tersalin ke clipboard!');
+        setTimeout(() => {
+          if (btn) btn.classList.remove('ok');
+          if (lbl) lbl.textContent = resetLbl;
+        }, 2400);
+      });
+    }
+    function doSmCopy() { copyPrompt('copySmBtn', 'copySmLbl', '✓ Copied', 'Copy') }
+    function doHeroCopy() { copyPrompt('heroCopyBtn', 'heroCopyLbl', '✓ Tersalin!', 'Salin Prompt') }
+    function doSectCopy() { copyPrompt('sectCopyBtn', 'sectCopyLbl', '✓ Tersalin!', 'Salin Prompt') }
+
+    /* ━━ TOOL LOGIC ━━ */
+    const codeIn = document.getElementById('code-in');
+    const tChars = document.getElementById('t-chars');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnDl = document.getElementById('btn-dl');
+    const btnClr = document.getElementById('btn-clr');
+    const dlLbl = document.getElementById('dl-lbl');
+    const pframe = document.getElementById('pframe');
+    const fWrap = document.getElementById('t-frame-wrap');
+    const tEmpty = document.getElementById('t-empty');
+    const tpbAddr = document.getElementById('tpb-addr');
+    const tProg = document.getElementById('t-prog');
+    const tProgB = document.getElementById('t-prog-bar');
+    const tProgL = document.getElementById('t-prog-lbl');
+    const rhost = document.getElementById('rhost');
+    let hasPrev = false;
+
+    codeIn.addEventListener('input', () => {
+      const l = codeIn.value.length;
+      tChars.textContent = l.toLocaleString('id');
+      const has = l > 10;
+      btnPrev.disabled = !has;
+      btnDl.disabled = !has;
+      btnClr.disabled = !has;
+    });
+
+    codeIn.addEventListener('keydown', e => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const s = codeIn.selectionStart;
+        const v = codeIn.value;
+        codeIn.value = v.slice(0, s) + '  ' + v.slice(codeIn.selectionEnd);
+        codeIn.selectionStart = codeIn.selectionEnd = s + 2;
+      }
+    });
+
+    function doPreview() {
+      const html = codeIn.value.trim();
+      if (!html) return;
+      pframe.srcdoc = html;
+      pframe.onload = () => {
+        try {
+          const h = pframe.contentDocument.documentElement.scrollHeight;
+          if (h > 400) pframe.style.height = h + 'px';
+          scaleFrame();
+        } catch (_) { }
+      };
+      fWrap.classList.add('show');
+      tEmpty.style.display = 'none';
+      tpbAddr.textContent = 'cv-preview://live — ' + new Date().toLocaleTimeString('id');
+      hasPrev = true;
+    }
+
+    function scaleFrame() {
+      const ww = fWrap.offsetWidth;
+      if (ww && ww < 794) {
+        const s = ww / 794;
+        pframe.style.transform = `scale(${s})`;
+        const h = parseInt(pframe.style.height) || 1123;
+        fWrap.style.height = (h * s) + 'px';
+      } else {
+        pframe.style.transform = '';
+        fWrap.style.height = '';
+      }
+    }
+    window.addEventListener('resize', scaleFrame);
+
+    async function doDL() {
+      const html = codeIn.value.trim();
+      if (!html) return;
+      if (!hasPrev) doPreview();
+      btnDl.disabled = true; btnPrev.disabled = true;
+      dlLbl.textContent = 'Memproses…';
+      showProg(5, 'Menyiapkan konten…');
+      try {
+        rhost.innerHTML = '';
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const styles = Array.from(doc.querySelectorAll('style')).map(s => s.textContent).join('\n');
+        const cvEl = doc.getElementById('cv-container') || doc.body;
+        const styleEl = document.createElement('style');
+        styleEl.textContent = `
+      #rhost *,#rhost *::before,#rhost *::after{box-sizing:border-box}
+      #rhost .no-print{display:none!important}
+      ${styles}
+      #rhost #cv-container{margin:0!important;box-shadow:none!important;max-width:100%!important;width:100%!important;padding:15mm 20mm!important;}
+    `;
+        rhost.appendChild(styleEl);
+        rhost.insertAdjacentHTML('beforeend', cvEl.outerHTML);
+        showProg(25, 'Render konten…');
+        await tick(120);
+        const target = rhost.querySelector('#cv-container') || rhost.children[1];
+        showProg(42, 'Screenshot…');
+        const canvas = await html2canvas(target, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#ffffff', logging: false, width: 794, windowWidth: 794 });
+        showProg(75, 'Buat PDF…');
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const A4W = 210, A4H = 297;
+        const pH = Math.floor((A4H / A4W) * canvas.width);
+        let yOff = 0, page = 0;
+        while (yOff < canvas.height) {
+          if (page > 0) pdf.addPage();
+          const sH = Math.min(pH, canvas.height - yOff);
+          const pc = document.createElement('canvas');
+          pc.width = canvas.width; pc.height = pH;
+          const ctx = pc.getContext('2d');
+          ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, pc.width, pc.height);
+          ctx.drawImage(canvas, 0, yOff, canvas.width, sH, 0, 0, canvas.width, sH);
+          pdf.addImage(pc.toDataURL('image/png'), 'PNG', 0, 0, A4W, A4H);
+          yOff += pH; page++;
+        }
+        showProg(96, 'Menyimpan…');
+        await tick(80);
+        pdf.save('CV.pdf');
+        showProg(100, '✓ PDF berhasil didownload!');
+        showToast('PDF berhasil didownload!');
+        setTimeout(() => {
+          hideProg(); btnDl.disabled = false; btnPrev.disabled = false;
+          dlLbl.textContent = 'Download PDF';
+        }, 2200);
+      } catch (err) {
+        console.error(err);
+        hideProg(); btnDl.disabled = false; btnPrev.disabled = false;
+        dlLbl.textContent = 'Download PDF';
+        alert('Gagal: ' + err.message);
+      } finally { rhost.innerHTML = ''; }
+    }
+
+    function doClear() {
+      codeIn.value = ''; tChars.textContent = '0';
+      btnPrev.disabled = true; btnDl.disabled = true; btnClr.disabled = true;
+      fWrap.classList.remove('show'); tEmpty.style.display = '';
+      tpbAddr.textContent = 'cv-preview://paste-html-above';
+      pframe.srcdoc = ''; pframe.style.height = '1123px'; pframe.style.transform = '';
+      fWrap.style.height = ''; hasPrev = false; hideProg();
+      dlLbl.textContent = 'Download PDF';
+    }
+
+    function tick(ms) { return new Promise(r => setTimeout(r, ms)) }
+    function showProg(p, msg) { tProg.classList.add('show'); tProgB.style.width = p + '%'; tProgL.textContent = msg }
+    function hideProg() { tProg.classList.remove('show'); tProgB.style.width = '0%' }
+  </script>
+</body>
+
+</html>

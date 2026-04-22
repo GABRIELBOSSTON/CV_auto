@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Gabriel Hamonangan Lumban Tobing</title>
+    <!-- Tailwind CSS for the app layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* CSS Khusus untuk Dokumen CV (Format ATS) */
+        :root {
+            --cv-bg: #ffffff;
+            --cv-text: #000000;
+        }
+
+        body {
+            background-color: #f3f4f6; /* Warna latar belakang halaman web */
+        }
+
+        /* Container menyerupai kertas A4 */
+        #cv-container {
+            width: 100%;
+            max-width: 210mm; /* Lebar standar A4 */
+            min-height: 297mm; /* Tinggi standar A4 */
+            margin: 2rem auto;
+            background-color: var(--cv-bg);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 20mm; /* Margin kertas 2cm di semua sisi */
+            font-family: "Times New Roman", Times, serif; /* Font paling aman untuk ATS */
+            color: var(--cv-text);
+            line-height: 1.5;
+            box-sizing: border-box;
+            /* Mencegah link panjang merusak layout/terpotong */
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
+
+        /* Tipografi CV */
+        .cv-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .cv-name {
+            font-size: 20pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+
+        .cv-contact {
+            font-size: 11pt;
+        }
+
+        .cv-contact a {
+            color: #000;
+            text-decoration: none;
+        }
+
+        .cv-section {
+            margin-bottom: 16px;
+        }
+
+        .cv-section-title {
+            font-size: 12pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 1px solid #000;
+            margin-bottom: 8px;
+            padding-bottom: 2px;
+            line-height: 1.2;
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+
+        .cv-item {
+            margin-bottom: 12px;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .cv-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-weight: bold;
+            font-size: 11pt;
+        }
+
+        .cv-item-subheader {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-style: italic;
+            font-size: 11pt;
+            margin-bottom: 4px;
+        }
+
+        .cv-item-desc {
+            font-size: 11pt;
+            margin-bottom: 4px;
+        }
+
+        .cv-list {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-top: 2px;
+            margin-bottom: 0;
+            font-size: 11pt;
+        }
+
+        .cv-list li {
+            margin-bottom: 3px;
+        }
+
+        /* Print Specific Styles - INI KUNCI AGAR PRINT CTRL+P RAPI */
+        @media print {
+            body {
+                background-color: white;
+            }
+            #cv-container {
+                margin: 0;
+                box-shadow: none;
+                padding: 0; 
+                max-width: 100%;
+                width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 15mm 20mm; /* Margin ini akan dipakai saat Ctrl+P */
+            }
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <!-- Header App / Kontrol -->
+    <div class="no-print bg-white border-b sticky top-0 z-10 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-xl font-bold text-gray-900">Web CV Generator (ATS-Friendly)</h1>
+                <p class="text-sm text-gray-500 mt-1">
+                    <span class="font-semibold text-blue-600">Saran Terbaik:</span> Unduh file HTML ini, buka di browser Chrome/Edge Anda, lalu tekan <b>Ctrl + P</b> (Save as PDF) untuk hasil 100% sempurna & tajam!
+                </p>
+            </div>
+            <button onclick="downloadHTML()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+                Download File Web (.html)
+            </button>
+        </div>
+    </div>
+
+    <!-- Wrapper Khusus untuk PDF Generation -->
+    <div id="pdf-wrapper">
+        <!-- Area Kertas CV -->
+        <div id="cv-container">
+            
+            <!-- HEADER -->
+            <div class="cv-header">
+                <div class="cv-name">Gabriel Hamonangan Lumban Tobing</div>
+                <div class="cv-contact">
+                    Bekasi, West Java | 
+                    <a href="mailto:gabrielharimutobng@gmail.com">gabrielharimutobng@gmail.com</a> | 
+                    <a href="https://www.linkedin.com/in/gabrielhamonangan" target="_blank">linkedin.com/in/gabrielhamonangan</a>
+                </div>
+            </div>
+
+            <!-- SUMMARY -->
+            <div class="cv-section">
+                <div class="cv-section-title">Summary</div>
+                <div class="cv-item-desc">
+                    Information Technology student at President University with a strong passion for data, software engineering, and AI. Interested in building scalable, data-driven systems and leveraging data to solve real-world problems. Experienced in developing web and application systems with a solid foundation in databases and analytical thinking. Known as a fast learner, adaptable, and driven to continuously grow in technology and data-focused roles.
+                </div>
+            </div>
+
+            <!-- EDUCATION -->
+            <div class="cv-section">
+                <div class="cv-section-title">Education</div>
+                
+                <div class="cv-item">
+                    <div class="cv-item-header">
+                        <span>President University</span>
+                        <span>Bekasi, West Java</span>
+                    </div>
+                    <div class="cv-item-subheader">
+                        <span>Bachelor of Information Technology (GPA: 3.6)</span>
+                        <span>August 2024 - August 2027</span>
+                    </div>
+                </div>
+
+                <div class="cv-item">
+                    <div class="cv-item-header">
+                        <span>Mahanain Senior High School</span>
+                        <span></span>
+                    </div>
+                    <div class="cv-item-subheader">
+                        <span>High School Diploma</span>
+                        <span>Graduated: 2024</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXPERIENCE -->
+            <div class="cv-section">
+                <div class="cv-section-title">Internship & Work Experience</div>
+
+                <!-- Gasgawe -->
+                <div class="cv-item">
+                    <div class="cv-item-header">
+                        <span>Gasgawe (Mobile Application Startup)</span>
+                        <span>Remote</span>
+                    </div>
+                    <div class="cv-item-subheader">
+                        <span>Mobile Application Developer Intern</span>
+                        <span>August 2024 - Present</span>
+                    </div>
+                    <ul class="cv-list">
+                        <li>Developed mobile application features using modern technologies.</li>
+                        <li>Collaborated with product and design teams to implement UI/UX.</li>
+                        <li>Conducted application testing and debugging to ensure optimal performance.</li>
+                        <li>Learned startup application development workflows.</li>
+                    </ul>
+                </div>
+
+                <!-- Diskominfo Bekasi -->
+                <div class="cv-item">
+                    <div class="cv-item-header">
+                        <span>Department of Communication and Informatics, Bekasi Regency</span>
+                        <span>Bekasi</span>
+                    </div>
+                    <div class="cv-item-subheader">
+                        <span>Programmer Intern</span>
+                        <span>May 2025 - July 2025</span>
+                    </div>
+                    <ul class="cv-list">
+                        <li>Developed and maintained the Bekasi Regency APBD website.</li>
+                        <li>Created technical documentation and optimized government website UI/UX.</li>
+                        <li>Collaborated with teams in public information digitalization.</li>
+                        <li>Implemented best practices in web development for the government sector.</li>
+                    </ul>
+                </div>
+
+                <!-- Responsaibility -->
+                <div class="cv-item">
+                    <div class="cv-item-header">
+                        <span>Responsaibility</span>
+                        <span>Remote</span>
+                    </div>
+                    <div class="cv-item-subheader">
+                        <span>Web Development Intern</span>
+                        <span></span>
+                    </div>
+                    <ul class="cv-list">
+                        <li>Designed and developed modern UI/UX organizational website concepts.</li>
+                        <li>Implemented website features according to team requirements.</li>
+                        <li>Collaborated remotely with the team in developing digital platforms.</li>
+                        <li>Supported system development and the organization's digital presence.</li>
+                    </ul>
+                </div>
+
+                <!-- PIXL -->
+                <div class="cv-item">
+                    <div class="cv-item-header">
+                        <span>PIXL (Freelance / Entrepreneur)</span>
+                        <span></span>
+                    </div>
+                    <div class="cv-item-subheader">
+                        <span>Web Developer</span>
+                        <span>January 2025 - Present</span>
+                    </div>
+                    <ul class="cv-list">
+                        <li>Designed and developed client websites using HTML, CSS, JavaScript, PHP, and MySQL.</li>
+                        <li>Built a teacher attendance system with JavaScript scanning library integration.</li>
+                        <li>Developed personal branding websites, company profiles, and custom information systems.</li>
+                        <li>Managed client communication and ensured deliverables met client requirements.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ORGANIZATIONAL EXPERIENCE -->
+            <div class="cv-section">
+                <div class="cv-section-title">Organizational Experience</div>
+
+                <!-- BEM -->
+                <div class="cv-item">
+                    <div class="cv-item-header">
+                        <span>BEM President University</span>
+                        <span>President University</span>
+                    </div>
+                    <div class="cv-item-subheader">
+                        <span>Web Developer</span>
+                        <span>2025 - Present</span>
+                    </div>
+                    <ul class="cv-list">
+                        <li>Developed and maintained the official BEM President University website.</li>
+                        <li>Managed organizational information systems and databases.</li>
+                        <li>Collaborated with other divisions for campus activity digitalization.</li>
+                        <li>Provided technical solutions for organizational needs.</li>
+                    </ul>
+                </div>
+
+                <!-- PUMA -->
+                <div class="cv-item">
+                    <div class="cv-item-header">
+                        <span>PUMA Informatics - President University</span>
+                        <span>President University</span>
+                    </div>
+                    <div class="cv-item-subheader">
+                        <span>Creative Media Member</span>
+                        <span>November 2024 - November 2025</span>
+                    </div>
+                    <ul class="cv-list">
+                        <li>Served as Web Developer at POLIMERITAS.COM.</li>
+                        <li>Acted as a Volunteer Web Developer for the Polimeritas platform.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ACHIEVEMENTS & AWARDS -->
+            <div class="cv-section">
+                <div class="cv-section-title">Achievements & Awards</div>
+
+                <!-- Web3 -->
+                <div class="cv-item">
+                    <div class="cv-item-header">
+                        <span>National Web3 Competition - Preliminary Round</span>
+                        <span>ICP Hub Indonesia</span>
+                    </div>
+                    <div class="cv-item-subheader">
+                        <span>Participant</span>
+                        <span>2025</span>
+                    </div>
+                    <ul class="cv-list">
+                        <li>Participated in a national Web3 competition organized by ICP Hub.</li>
+                        <li>Developed a blockchain-based application solution, demonstrating skills in decentralized technologies.</li>
+                    </ul>
+                </div>
+
+                <!-- Call for Paper -->
+                <div class="cv-item">
+                    <div class="cv-item-header">
+                        <span>National Call for Paper</span>
+                        <span>IASSSF x Pegadaian</span>
+                    </div>
+                    <div class="cv-item-subheader">
+                        <span>Author</span>
+                        <span>2026</span>
+                    </div>
+                    <ul class="cv-list">
+                        <li>Scientific paper titled: "Building a New Architecture for the National Gold Economy: Transformation of Pegadaian Bullion Services as a Catalyst for Macroeconomic Stability and MSME Independence Towards Indonesia Emas 2045".</li>
+                    </ul>
+                </div>
+
+                <!-- BPC UI -->
+                <div class="cv-item">
+                    <div class="cv-item-header">
+                        <span>Business Plan Competition</span>
+                        <span>Universitas Indonesia</span>
+                    </div>
+                    <div class="cv-item-subheader">
+                        <span>Semifinalist</span>
+                        <span>2025</span>
+                    </div>
+                    <ul class="cv-list">
+                        <li>Reached the semifinal round in a national business plan competition.</li>
+                        <li>Developed a technology-based business proposal and presented innovative ideas before a professional judging panel.</li>
+                    </ul>
+                </div>
+
+                <!-- GBMF -->
+                <div class="cv-item">
+                    <div class="cv-item-header">
+                        <span>Business Competition</span>
+                        <span>Ganesha Business Management Festival</span>
+                    </div>
+                    <div class="cv-item-subheader">
+                        <span>Semifinalist</span>
+                        <span>2024</span>
+                    </div>
+                    <ul class="cv-list">
+                        <li>Competed with teams from various universities, analyzing business case studies and proposing strategic solutions.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- CERTIFICATIONS & TRAINING -->
+            <div class="cv-section">
+                <div class="cv-section-title">Certifications & Training</div>
+                <ul class="cv-list">
+                    <li>Introduction to Database Migration - Amazon Web Services (AWS)</li>
+                    <li>Foundations: Data - Google</li>
+                    <li>Foundations of Cybersecurity - Google</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Javascript untuk download file utuh HTML -->
+    <script>
+        function downloadHTML() {
+            // Ambil seluruh kode HTML dari halaman ini
+            const htmlContent = document.documentElement.outerHTML;
+            
+            // Buat file Blob
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            
+            // Buat link download sementara
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CV_Gabriel_Hamonangan_Tobing.html';
+            
+            // Simulasikan klik
+            document.body.appendChild(a);
+            a.click();
+            
+            // Bersihkan
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
