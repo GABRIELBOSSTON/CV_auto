@@ -1,431 +1,566 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV Gabriel Hamonangan Lumban Tobing</title>
-    <!-- Tailwind CSS for the app layout -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>3D Flight Visualizer - Global Air Traffic</title>
     <style>
-        /* CSS Khusus untuk Dokumen CV (Format ATS) */
-        :root {
-            --cv-bg: #ffffff;
-            --cv-text: #000000;
-        }
-
         body {
-            background-color: #f3f4f6; /* Warna latar belakang halaman web */
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Montserrat', sans-serif;
         }
-
-        /* Container menyerupai kertas A4 */
-        #cv-container {
-            width: 100%;
-            max-width: 210mm; /* Lebar standar A4 */
-            min-height: 297mm; /* Tinggi standar A4 */
-            margin: 2rem auto;
-            background-color: var(--cv-bg);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            padding: 20mm; /* Margin kertas 2cm di semua sisi */
-            font-family: "Times New Roman", Times, serif; /* Font paling aman untuk ATS */
-            color: var(--cv-text);
-            line-height: 1.5;
-            box-sizing: border-box;
-            /* Mencegah link panjang merusak layout/terpotong */
-            overflow-wrap: break-word;
-            word-wrap: break-word;
+        #info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 10;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            border-left: 4px solid #00aaff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
-
-        /* Tipografi CV */
-        .cv-header {
-            text-align: center;
-            margin-bottom: 20px;
+        #controls-hint {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(255,255,255,0.7);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-family: monospace;
+            pointer-events: none;
+            z-index: 10;
         }
-
-        .cv-name {
-            font-size: 20pt;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-            line-height: 1.2;
-        }
-
-        .cv-contact {
-            font-size: 11pt;
-        }
-
-        .cv-contact a {
-            color: #000;
-            text-decoration: none;
-        }
-
-        .cv-section {
-            margin-bottom: 16px;
-        }
-
-        .cv-section-title {
-            font-size: 12pt;
-            font-weight: bold;
-            text-transform: uppercase;
-            border-bottom: 1px solid #000;
-            margin-bottom: 8px;
-            padding-bottom: 2px;
-            line-height: 1.2;
-            page-break-after: avoid;
-            break-after: avoid;
-        }
-
-        .cv-item {
-            margin-bottom: 12px;
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
-        .cv-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            font-weight: bold;
-            font-size: 11pt;
-        }
-
-        .cv-item-subheader {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            font-style: italic;
-            font-size: 11pt;
-            margin-bottom: 4px;
-        }
-
-        .cv-item-desc {
-            font-size: 11pt;
-            margin-bottom: 4px;
-        }
-
-        .cv-list {
-            list-style-type: disc;
-            padding-left: 20px;
-            margin-top: 2px;
-            margin-bottom: 0;
-            font-size: 11pt;
-        }
-
-        .cv-list li {
-            margin-bottom: 3px;
-        }
-
-        /* Print Specific Styles - INI KUNCI AGAR PRINT CTRL+P RAPI */
-        @media print {
-            body {
-                background-color: white;
-            }
-            #cv-container {
-                margin: 0;
-                box-shadow: none;
-                padding: 0; 
-                max-width: 100%;
-                width: 100%;
-            }
-            .no-print {
-                display: none !important;
-            }
-            @page {
-                size: A4 portrait;
-                margin: 15mm 20mm; /* Margin ini akan dipakai saat Ctrl+P */
-            }
+        @media (max-width: 600px) {
+            #info { font-size: 10px; bottom: 12px; left: 12px; }
+            #controls-hint { font-size: 9px; bottom: 12px; right: 12px; }
         }
     </style>
 </head>
-<body class="antialiased text-gray-800">
-
-    <!-- Header App / Kontrol -->
-    <div class="no-print bg-white border-b sticky top-0 z-10 shadow-sm">
-        <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div>
-                <h1 class="text-xl font-bold text-gray-900">Web CV Generator (ATS-Friendly)</h1>
-                <p class="text-sm text-gray-500 mt-1">
-                    <span class="font-semibold text-blue-600">Saran Terbaik:</span> Unduh file HTML ini, buka di browser Chrome/Edge Anda, lalu tekan <b>Ctrl + P</b> (Save as PDF) untuk hasil 100% sempurna & tajam!
-                </p>
-            </div>
-            <button onclick="downloadHTML()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-                Download File Web (.html)
-            </button>
-        </div>
+<body>
+    <div id="info">
+        ✈️ LIVE FLIGHT TRACKING | Great-circle routes | Smooth interpolation
+    </div>
+    <div id="controls-hint">
+        🖱️ Drag to rotate | Scroll to zoom
     </div>
 
-    <!-- Wrapper Khusus untuk PDF Generation -->
-    <div id="pdf-wrapper">
-        <!-- Area Kertas CV -->
-        <div id="cv-container">
-            
-            <!-- HEADER -->
-            <div class="cv-header">
-                <div class="cv-name">Gabriel Hamonangan Lumban Tobing</div>
-                <div class="cv-contact">
-                    Bekasi, West Java | 
-                    <a href="mailto:gabrielharimutobng@gmail.com">gabrielharimutobng@gmail.com</a> | 
-                    <a href="https://www.linkedin.com/in/gabrielhamonangan" target="_blank">linkedin.com/in/gabrielhamonangan</a>
-                </div>
-            </div>
-
-            <!-- SUMMARY -->
-            <div class="cv-section">
-                <div class="cv-section-title">Summary</div>
-                <div class="cv-item-desc">
-                    Information Technology student at President University with a strong passion for data, software engineering, and AI. Interested in building scalable, data-driven systems and leveraging data to solve real-world problems. Experienced in developing web and application systems with a solid foundation in databases and analytical thinking. Known as a fast learner, adaptable, and driven to continuously grow in technology and data-focused roles.
-                </div>
-            </div>
-
-            <!-- EDUCATION -->
-            <div class="cv-section">
-                <div class="cv-section-title">Education</div>
-                
-                <div class="cv-item">
-                    <div class="cv-item-header">
-                        <span>President University</span>
-                        <span>Bekasi, West Java</span>
-                    </div>
-                    <div class="cv-item-subheader">
-                        <span>Bachelor of Information Technology (GPA: 3.6)</span>
-                        <span>August 2024 - August 2027</span>
-                    </div>
-                </div>
-
-                <div class="cv-item">
-                    <div class="cv-item-header">
-                        <span>Mahanain Senior High School</span>
-                        <span></span>
-                    </div>
-                    <div class="cv-item-subheader">
-                        <span>High School Diploma</span>
-                        <span>Graduated: 2024</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- EXPERIENCE -->
-            <div class="cv-section">
-                <div class="cv-section-title">Internship & Work Experience</div>
-
-                <!-- Gasgawe -->
-                <div class="cv-item">
-                    <div class="cv-item-header">
-                        <span>Gasgawe (Mobile Application Startup)</span>
-                        <span>Remote</span>
-                    </div>
-                    <div class="cv-item-subheader">
-                        <span>Mobile Application Developer Intern</span>
-                        <span>August 2024 - Present</span>
-                    </div>
-                    <ul class="cv-list">
-                        <li>Developed mobile application features using modern technologies.</li>
-                        <li>Collaborated with product and design teams to implement UI/UX.</li>
-                        <li>Conducted application testing and debugging to ensure optimal performance.</li>
-                        <li>Learned startup application development workflows.</li>
-                    </ul>
-                </div>
-
-                <!-- Diskominfo Bekasi -->
-                <div class="cv-item">
-                    <div class="cv-item-header">
-                        <span>Department of Communication and Informatics, Bekasi Regency</span>
-                        <span>Bekasi</span>
-                    </div>
-                    <div class="cv-item-subheader">
-                        <span>Programmer Intern</span>
-                        <span>May 2025 - July 2025</span>
-                    </div>
-                    <ul class="cv-list">
-                        <li>Developed and maintained the Bekasi Regency APBD website.</li>
-                        <li>Created technical documentation and optimized government website UI/UX.</li>
-                        <li>Collaborated with teams in public information digitalization.</li>
-                        <li>Implemented best practices in web development for the government sector.</li>
-                    </ul>
-                </div>
-
-                <!-- Responsaibility -->
-                <div class="cv-item">
-                    <div class="cv-item-header">
-                        <span>Responsaibility</span>
-                        <span>Remote</span>
-                    </div>
-                    <div class="cv-item-subheader">
-                        <span>Web Development Intern</span>
-                        <span></span>
-                    </div>
-                    <ul class="cv-list">
-                        <li>Designed and developed modern UI/UX organizational website concepts.</li>
-                        <li>Implemented website features according to team requirements.</li>
-                        <li>Collaborated remotely with the team in developing digital platforms.</li>
-                        <li>Supported system development and the organization's digital presence.</li>
-                    </ul>
-                </div>
-
-                <!-- PIXL -->
-                <div class="cv-item">
-                    <div class="cv-item-header">
-                        <span>PIXL (Freelance / Entrepreneur)</span>
-                        <span></span>
-                    </div>
-                    <div class="cv-item-subheader">
-                        <span>Web Developer</span>
-                        <span>January 2025 - Present</span>
-                    </div>
-                    <ul class="cv-list">
-                        <li>Designed and developed client websites using HTML, CSS, JavaScript, PHP, and MySQL.</li>
-                        <li>Built a teacher attendance system with JavaScript scanning library integration.</li>
-                        <li>Developed personal branding websites, company profiles, and custom information systems.</li>
-                        <li>Managed client communication and ensured deliverables met client requirements.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- ORGANIZATIONAL EXPERIENCE -->
-            <div class="cv-section">
-                <div class="cv-section-title">Organizational Experience</div>
-
-                <!-- BEM -->
-                <div class="cv-item">
-                    <div class="cv-item-header">
-                        <span>BEM President University</span>
-                        <span>President University</span>
-                    </div>
-                    <div class="cv-item-subheader">
-                        <span>Web Developer</span>
-                        <span>2025 - Present</span>
-                    </div>
-                    <ul class="cv-list">
-                        <li>Developed and maintained the official BEM President University website.</li>
-                        <li>Managed organizational information systems and databases.</li>
-                        <li>Collaborated with other divisions for campus activity digitalization.</li>
-                        <li>Provided technical solutions for organizational needs.</li>
-                    </ul>
-                </div>
-
-                <!-- PUMA -->
-                <div class="cv-item">
-                    <div class="cv-item-header">
-                        <span>PUMA Informatics - President University</span>
-                        <span>President University</span>
-                    </div>
-                    <div class="cv-item-subheader">
-                        <span>Creative Media Member</span>
-                        <span>November 2024 - November 2025</span>
-                    </div>
-                    <ul class="cv-list">
-                        <li>Served as Web Developer at POLIMERITAS.COM.</li>
-                        <li>Acted as a Volunteer Web Developer for the Polimeritas platform.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- ACHIEVEMENTS & AWARDS -->
-            <div class="cv-section">
-                <div class="cv-section-title">Achievements & Awards</div>
-
-                <!-- Web3 -->
-                <div class="cv-item">
-                    <div class="cv-item-header">
-                        <span>National Web3 Competition - Preliminary Round</span>
-                        <span>ICP Hub Indonesia</span>
-                    </div>
-                    <div class="cv-item-subheader">
-                        <span>Participant</span>
-                        <span>2025</span>
-                    </div>
-                    <ul class="cv-list">
-                        <li>Participated in a national Web3 competition organized by ICP Hub.</li>
-                        <li>Developed a blockchain-based application solution, demonstrating skills in decentralized technologies.</li>
-                    </ul>
-                </div>
-
-                <!-- Call for Paper -->
-                <div class="cv-item">
-                    <div class="cv-item-header">
-                        <span>National Call for Paper</span>
-                        <span>IASSSF x Pegadaian</span>
-                    </div>
-                    <div class="cv-item-subheader">
-                        <span>Author</span>
-                        <span>2026</span>
-                    </div>
-                    <ul class="cv-list">
-                        <li>Scientific paper titled: "Building a New Architecture for the National Gold Economy: Transformation of Pegadaian Bullion Services as a Catalyst for Macroeconomic Stability and MSME Independence Towards Indonesia Emas 2045".</li>
-                    </ul>
-                </div>
-
-                <!-- BPC UI -->
-                <div class="cv-item">
-                    <div class="cv-item-header">
-                        <span>Business Plan Competition</span>
-                        <span>Universitas Indonesia</span>
-                    </div>
-                    <div class="cv-item-subheader">
-                        <span>Semifinalist</span>
-                        <span>2025</span>
-                    </div>
-                    <ul class="cv-list">
-                        <li>Reached the semifinal round in a national business plan competition.</li>
-                        <li>Developed a technology-based business proposal and presented innovative ideas before a professional judging panel.</li>
-                    </ul>
-                </div>
-
-                <!-- GBMF -->
-                <div class="cv-item">
-                    <div class="cv-item-header">
-                        <span>Business Competition</span>
-                        <span>Ganesha Business Management Festival</span>
-                    </div>
-                    <div class="cv-item-subheader">
-                        <span>Semifinalist</span>
-                        <span>2024</span>
-                    </div>
-                    <ul class="cv-list">
-                        <li>Competed with teams from various universities, analyzing business case studies and proposing strategic solutions.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- CERTIFICATIONS & TRAINING -->
-            <div class="cv-section">
-                <div class="cv-section-title">Certifications & Training</div>
-                <ul class="cv-list">
-                    <li>Introduction to Database Migration - Amazon Web Services (AWS)</li>
-                    <li>Foundations: Data - Google</li>
-                    <li>Foundations of Cybersecurity - Google</li>
-                </ul>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Javascript untuk download file utuh HTML -->
-    <script>
-        function downloadHTML() {
-            // Ambil seluruh kode HTML dari halaman ini
-            const htmlContent = document.documentElement.outerHTML;
-            
-            // Buat file Blob
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            
-            // Buat link download sementara
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'CV_Gabriel_Hamonangan_Tobing.html';
-            
-            // Simulasikan klik
-            document.body.appendChild(a);
-            a.click();
-            
-            // Bersihkan
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+    <!-- Import Three.js core and add-ons via CDN -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
         }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- Setup Scene, Camera, Renderer ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x010118); // deep space color
+        scene.fog = new THREE.FogExp2(0x010118, 0.0003); // subtle fog for depth
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.position.set(0, 2, 15);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true; // enable shadows for better depth (aircraft shadows optional)
+        document.body.appendChild(renderer.domElement);
+
+        // --- Controls: rotatable Earth with smooth interaction ---
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;          // smooth inertia
+        controls.dampingFactor = 0.05;
+        controls.rotateSpeed = 1.0;
+        controls.zoomSpeed = 1.2;
+        controls.enableZoom = true;
+        controls.enablePan = false;
+        controls.autoRotate = false;
+        controls.target.set(0, 0, 0);
+        
+        // --- Starfield Background: particle system (distant stars) ---
+        const starGeometry = new THREE.BufferGeometry();
+        const starCount = 3500;
+        const starPositions = new Float32Array(starCount * 3);
+        for (let i = 0; i < starCount; i++) {
+            // random points within a large sphere radius 800-1200 for depth variation
+            const radius = 600 + Math.random() * 400;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            starPositions[i*3] = radius * Math.sin(phi) * Math.cos(theta);
+            starPositions[i*3+1] = radius * Math.sin(phi) * Math.sin(theta);
+            starPositions[i*3+2] = radius * Math.cos(phi);
+        }
+        starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+        const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.35, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
+        const stars = new THREE.Points(starGeometry, starMaterial);
+        scene.add(stars);
+        
+        // Optional: a second layer of tiny stars
+        const starGeometry2 = new THREE.BufferGeometry();
+        const starCount2 = 2000;
+        const starPositions2 = new Float32Array(starCount2 * 3);
+        for (let i = 0; i < starCount2; i++) {
+            starPositions2[i*3] = (Math.random() - 0.5) * 2000;
+            starPositions2[i*3+1] = (Math.random() - 0.5) * 1200;
+            starPositions2[i*3+2] = (Math.random() - 0.5) * 1500 - 500;
+        }
+        starGeometry2.setAttribute('position', new THREE.BufferAttribute(starPositions2, 3));
+        const starMaterial2 = new THREE.PointsMaterial({ color: 0xaaccff, size: 0.2, transparent: true, opacity: 0.6 });
+        const stars2 = new THREE.Points(starGeometry2, starMaterial2);
+        scene.add(stars2);
+
+        // --- Earth Parameters ---
+        const earthRadius = 5.0;
+        const earthGeometry = new THREE.SphereGeometry(earthRadius, 128, 128);
+        
+        // High-quality Earth texture (diffuse map with clouds and atmosphere look)
+        const textureLoader = new THREE.TextureLoader();
+        const earthMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
+        const earthSpecularMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
+        const earthNormalMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg');
+        const cloudMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png');
+        
+        // Earth material with polished lighting
+        const earthMaterial = new THREE.MeshPhongMaterial({
+            map: earthMap,
+            specularMap: earthSpecularMap,
+            specular: new THREE.Color('grey'),
+            shininess: 5,
+            normalMap: earthNormalMap,
+            normalScale: new THREE.Vector2(1.2, 1.2)
+        });
+        
+        const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+        scene.add(earth);
+        
+        // Add semi-transparent cloud layer for extra realism
+        const cloudGeometry = new THREE.SphereGeometry(earthRadius + 0.02, 128, 128);
+        const cloudMaterial = new THREE.MeshPhongMaterial({
+            map: cloudMap,
+            transparent: true,
+            opacity: 0.12,
+            blending: THREE.AdditiveBlending
+        });
+        const clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
+        scene.add(clouds);
+        
+        // --- Lighting: Polished and dramatic ---
+        // Ambient light for base illumination
+        const ambientLight = new THREE.AmbientLight(0x222222);
+        scene.add(ambientLight);
+        
+        // Main directional light (simulating sun)
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        sunLight.position.set(10, 15, 5);
+        sunLight.castShadow = true;
+        sunLight.receiveShadow = false;
+        sunLight.shadow.mapSize.width = 1024;
+        sunLight.shadow.mapSize.height = 1024;
+        scene.add(sunLight);
+        
+        // Fill light from below to illuminate dark side slightly
+        const fillLight = new THREE.PointLight(0x4466cc, 0.25);
+        fillLight.position.set(0, -5, 0);
+        scene.add(fillLight);
+        
+        // Back rim light to enhance edges
+        const rimLight = new THREE.PointLight(0xffaa66, 0.4);
+        rimLight.position.set(-5, 3, -8);
+        scene.add(rimLight);
+        
+        // Additional soft fill from front
+        const frontFill = new THREE.PointLight(0x88aaff, 0.2);
+        frontFill.position.set(2, 1, 6);
+        scene.add(frontFill);
+        
+        // --- Helper: Convert Lat/Lon (degrees) to Cartesian Vector3 (with altitude offset) ---
+        const degToRad = Math.PI / 180;
+        function latLonToVector3(lat, lon, radiusOffset = 0) {
+            const phi = (90 - lat) * degToRad;
+            const theta = lon * degToRad;
+            const r = earthRadius + radiusOffset;
+            const x = r * Math.sin(phi) * Math.cos(theta);
+            const y = r * Math.cos(phi);
+            const z = r * Math.sin(phi) * Math.sin(theta);
+            return new THREE.Vector3(x, y, z);
+        }
+        
+        // --- Aircraft Creation: Detailed low-poly model (wing + body + tail) ---
+        function createAircraft(color, emissiveIntensity = 0.15) {
+            const group = new THREE.Group();
+            
+            // Fuselage (elongated capsule using cylinder + cone)
+            const bodyGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.55, 8);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: color, metalness: 0.7, roughness: 0.3, emissive: color, emissiveIntensity: emissiveIntensity });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            body.rotation.x = Math.PI / 2;
+            body.position.z = 0;
+            group.add(body);
+            
+            // Nose cone
+            const noseGeo = new THREE.ConeGeometry(0.11, 0.25, 8);
+            const noseMat = new THREE.MeshStandardMaterial({ color: color, metalness: 0.8 });
+            const nose = new THREE.Mesh(noseGeo, noseMat);
+            nose.position.z = 0.32;
+            nose.rotation.x = 0;
+            group.add(nose);
+            
+            // Wings (swept wings)
+            const wingGeo = new THREE.BoxGeometry(0.55, 0.05, 0.2);
+            const wingMat = new THREE.MeshStandardMaterial({ color: color, metalness: 0.6 });
+            const wings = new THREE.Mesh(wingGeo, wingMat);
+            wings.position.set(0, 0, 0);
+            wings.rotation.z = 0;
+            group.add(wings);
+            
+            // Wing tips (small vertical stabilizers style)
+            const tipGeo = new THREE.BoxGeometry(0.08, 0.12, 0.08);
+            const leftTip = new THREE.Mesh(tipGeo, wingMat);
+            leftTip.position.set(-0.3, 0.02, 0.05);
+            const rightTip = new THREE.Mesh(tipGeo, wingMat);
+            rightTip.position.set(0.3, 0.02, 0.05);
+            group.add(leftTip);
+            group.add(rightTip);
+            
+            // Tail fin (vertical stabilizer)
+            const tailGeo = new THREE.ConeGeometry(0.09, 0.2, 4);
+            const tailMat = new THREE.MeshStandardMaterial({ color: color, metalness: 0.5 });
+            const tail = new THREE.Mesh(tailGeo, tailMat);
+            tail.position.set(0, 0.1, -0.28);
+            tail.rotation.x = 0;
+            group.add(tail);
+            
+            // Horizontal stabilizers
+            const hTailGeo = new THREE.BoxGeometry(0.28, 0.05, 0.12);
+            const hTail = new THREE.Mesh(hTailGeo, wingMat);
+            hTail.position.set(0, 0.02, -0.33);
+            group.add(hTail);
+            
+            // Add a subtle glowing beacon
+            const beaconGeo = new THREE.SphereGeometry(0.045, 6, 6);
+            const beaconMat = new THREE.MeshStandardMaterial({ color: 0xff3300, emissive: 0xff2200, emissiveIntensity: 0.6 });
+            const beacon = new THREE.Mesh(beaconGeo, beaconMat);
+            beacon.position.set(0, 0.1, 0.15);
+            group.add(beacon);
+            
+            return group;
+        }
+        
+        // --- Spherical Linear Interpolation (SLERP) for smooth great-circle motion ---
+        function slerpVectors(v0, v1, t) {
+            // v0 and v1 are unit vectors (normalized)
+            const dot = v0.dot(v1);
+            // clamp due to floating errors
+            const cosTheta = Math.min(1, Math.max(-1, dot));
+            const theta = Math.acos(cosTheta);
+            if (theta < 1e-6) return v0.clone().lerp(v1, t).normalize();
+            const sinTheta = Math.sin(theta);
+            const a = Math.sin((1 - t) * theta) / sinTheta;
+            const b = Math.sin(t * theta) / sinTheta;
+            return new THREE.Vector3().addScaledVector(v0, a).addScaledVector(v1, b).normalize();
+        }
+        
+        // --- Define Flight Routes (waypoints as [lat, lon] in degrees) ---
+        // Route 1: Equatorial Express - circles the globe along equator
+        const equatorialWaypoints = [
+            [0, -160], [0, -100], [0, -40], [0, 20], [0, 80], [0, 140], [0, 200]
+        ];
+        // Route 2: Polar Pioneer - from Arctic to Antarctic via Greenwich meridian
+        const polarWaypoints = [
+            [82, -10], [65, -15], [45, -5], [20, 0], [0, 0], [-20, 0], [-45, 0], [-65, -5], [-82, -10]
+        ];
+        // Route 3: Transatlantic - New York to London to Paris to Moscow (busy corridor)
+        const atlanticWaypoints = [
+            [40.7, -74.0],   // NYC
+            [45.5, -45.0],   // mid atlantic
+            [51.5, -0.1],    // London
+            [48.9, 2.35],    // Paris
+            [55.75, 37.62]   // Moscow
+        ];
+        // Route 4: Pacific & Asia loop - Tokyo to Shanghai to Sydney to LA
+        const pacificWaypoints = [
+            [35.68, 139.76],  // Tokyo
+            [31.23, 121.47],  // Shanghai
+            [13.73, 100.50],  // Bangkok
+            [-33.87, 151.21], // Sydney
+            [34.05, -118.24], // Los Angeles
+            [21.3, -157.85]   // Honolulu (added for smooth arc)
+        ];
+        // Route 5: Southern Scenic - across South America, Africa, Australia
+        const southernWaypoints = [
+            [-23.55, -46.63],  // São Paulo
+            [-34.6, -58.38],   // Buenos Aires
+            [-29.0, 27.5],     // South Africa
+            [-26.2, 28.0],     // Johannesburg area
+            [-31.95, 115.86],  // Perth
+            [-33.87, 151.21]   // Sydney
+        ];
+        
+        // --- Precompute unit vectors for each route (radius = 1) ---
+        function prepareRoute(waypoints) {
+            return waypoints.map(wp => {
+                const [lat, lon] = wp;
+                const pos = latLonToVector3(lat, lon, 0);
+                return pos.clone().normalize(); // unit vector
+            });
+        }
+        
+        const routesData = [
+            { waypoints: equatorialWaypoints, speed: 0.22, color: 0x44aaff, name: "Equator Express", altitude: 0.12, emissive: 0.2 },
+            { waypoints: polarWaypoints, speed: 0.18, color: 0xff66cc, name: "Polar Pioneer", altitude: 0.13, emissive: 0.18 },
+            { waypoints: atlanticWaypoints, speed: 0.25, color: 0xffaa44, name: "Atlantic Jet", altitude: 0.11, emissive: 0.22 },
+            { waypoints: pacificWaypoints, speed: 0.20, color: 0x66ff66, name: "Pacific Voyager", altitude: 0.12, emissive: 0.16 },
+            { waypoints: southernWaypoints, speed: 0.19, color: 0xff8844, name: "Southern Cross", altitude: 0.12, emissive: 0.19 }
+        ];
+        
+        // Build route objects with precomputed unit vectors and segment lengths (angular distances for t scaling)
+        class FlightRoute {
+            constructor(waypointsLatLon, speed, color, altitude, emissive) {
+                this.rawPoints = waypointsLatLon;
+                this.unitVectors = prepareRoute(waypointsLatLon);
+                this.segmentCount = this.unitVectors.length - 1;
+                this.speed = speed;          // segments per second
+                this.color = color;
+                this.altitude = altitude;
+                this.emissive = emissive;
+                // precompute angular distances for each segment (to make speed consistent along path)
+                this.segmentAngles = [];
+                for (let i = 0; i < this.segmentCount; i++) {
+                    const dot = this.unitVectors[i].dot(this.unitVectors[i+1]);
+                    const angle = Math.acos(Math.min(1, Math.max(-1, dot)));
+                    this.segmentAngles.push(angle);
+                }
+                // total cumulative angle
+                this.totalAngle = this.segmentAngles.reduce((a,b) => a+b, 0);
+            }
+            
+            // Get position along route at normalized t (0-1) using angular parameter interpolation
+            getPositionAtT(t) {
+                if (t <= 0) return this.unitVectors[0];
+                if (t >= 1) return this.unitVectors[this.unitVectors.length-1];
+                // find which segment based on angular distance proportion
+                const targetAngle = t * this.totalAngle;
+                let cumAngle = 0;
+                for (let i = 0; i < this.segmentCount; i++) {
+                    const segAngle = this.segmentAngles[i];
+                    if (targetAngle <= cumAngle + segAngle) {
+                        const localT = (targetAngle - cumAngle) / segAngle;
+                        const v0 = this.unitVectors[i];
+                        const v1 = this.unitVectors[i+1];
+                        const interpVec = slerpVectors(v0, v1, localT);
+                        return interpVec;
+                    }
+                    cumAngle += segAngle;
+                }
+                return this.unitVectors[this.unitVectors.length-1];
+            }
+        }
+        
+        // --- Aircraft instances ---
+        const aircrafts = [];
+        const routes = [];
+        
+        // Create route instances and corresponding aircraft meshes
+        routesData.forEach((data, idx) => {
+            const route = new FlightRoute(data.waypoints, data.speed, data.color, data.altitude, data.emissive);
+            routes.push(route);
+            
+            const aircraftGroup = createAircraft(data.color, data.emissive);
+            scene.add(aircraftGroup);
+            
+            // Random starting phase offset between 0 and 1
+            const phase = Math.random();
+            let t = phase;
+            
+            aircrafts.push({
+                group: aircraftGroup,
+                route: route,
+                t: t,
+                speed: data.speed,
+                altitude: data.altitude
+            });
+        });
+        
+        // --- Additional auxiliary aircraft: add 2 more distinctive routes for richer air traffic ---
+        // Custom high-speed intercontinental route: Dubai -> Delhi -> Singapore
+        const expressWaypoints = [
+            [25.20, 55.27],   // Dubai
+            [28.61, 77.23],   // Delhi
+            [1.35, 103.87],   // Singapore
+            [19.07, 72.88],   // Mumbai (loop back creative)
+            [25.20, 55.27]
+        ];
+        const expressRoute = new FlightRoute(expressWaypoints, 0.27, 0xff55aa, 0.12, 0.25);
+        const expressJet = createAircraft(0xff55aa, 0.25);
+        scene.add(expressJet);
+        aircrafts.push({
+            group: expressJet,
+            route: expressRoute,
+            t: Math.random(),
+            speed: 0.27,
+            altitude: 0.12
+        });
+        routes.push(expressRoute);
+        
+        // Route: Nordic lights route (Scandinavia to Iceland to Greenland)
+        const nordicWaypoints = [
+            [59.33, 18.07],   // Stockholm
+            [64.15, -21.93],  // Reykjavik
+            [66.0, -40.0],    // Mid Greenland
+            [60.0, -70.0],    // Eastern Canada
+            [45.5, -73.6]     // Montreal for interest
+        ];
+        const nordicRoute = new FlightRoute(nordicWaypoints, 0.21, 0x88ddff, 0.115, 0.2);
+        const nordicJet = createAircraft(0x88ddff, 0.2);
+        scene.add(nordicJet);
+        aircrafts.push({
+            group: nordicJet,
+            route: nordicRoute,
+            t: Math.random(),
+            speed: 0.21,
+            altitude: 0.115
+        });
+        routes.push(nordicRoute);
+        
+        // --- Animation & Smooth Interpolation Loop (time-delta based) ---
+        let lastTime = performance.now();
+        
+        // Helper to update each aircraft's position based on route and t
+        function updateAircraftPositions(deltaTime) {
+            aircrafts.forEach(aircraft => {
+                // increment t based on speed (segments per second)
+                // deltaTime in seconds, speed factor ensures smooth constant angular speed
+                let increment = aircraft.speed * deltaTime;
+                let newT = aircraft.t + increment;
+                if (newT > 1.0) {
+                    newT = newT - 1.0;  // loop continuously (endless flight)
+                }
+                aircraft.t = newT;
+                
+                // Get unit direction vector for current t
+                const unitPos = aircraft.route.getPositionAtT(aircraft.t);
+                // Scale to earth radius + altitude
+                const finalPos = unitPos.clone().multiplyScalar(earthRadius + aircraft.altitude);
+                aircraft.group.position.copy(finalPos);
+                
+                // --- Advanced: Orient aircraft to face direction of motion (smooth heading) ---
+                // Compute a tiny delta t ahead for direction vector
+                let t2 = aircraft.t + 0.008;
+                if (t2 > 1.0) t2 = t2 - 1.0;
+                const futureUnit = aircraft.route.getPositionAtT(t2);
+                const futurePos = futureUnit.clone().multiplyScalar(earthRadius + aircraft.altitude);
+                const direction = futurePos.clone().sub(finalPos).normalize();
+                
+                if (direction.length() > 0.001) {
+                    // Create quaternion to align aircraft's forward (positive Z) with direction
+                    const quaternion = new THREE.Quaternion();
+                    const forward = new THREE.Vector3(0, 0, 1);
+                    quaternion.setFromUnitVectors(forward, direction);
+                    aircraft.group.quaternion.copy(quaternion);
+                    
+                    // Additional slight banking using roll (optional: tilt based on cross product)
+                    // Add a slight upward tilt for visual appeal
+                    const upRef = new THREE.Vector3(0, 1, 0);
+                    const right = upRef.clone().cross(direction).normalize();
+                    const correctedUp = direction.clone().cross(right).normalize();
+                    const bankQuat = new THREE.Quaternion().setFromUnitVectors(upRef, correctedUp);
+                    aircraft.group.quaternion.multiplyQuaternions(bankQuat, quaternion);
+                }
+                
+                // Add a subtle bounce/ engine glow effect: pulsate beacon light
+                if (aircraft.group.children.some(c => c.material && c.material.emissiveIntensity)) {
+                    const pulse = 0.5 + Math.sin(Date.now() * 0.012) * 0.25;
+                    aircraft.group.children.forEach(child => {
+                        if (child.material && child.material.emissiveIntensity && child.material.color.getHex() === 0xff3300) {
+                            child.material.emissiveIntensity = 0.4 + pulse * 0.3;
+                        }
+                    });
+                }
+            });
+        }
+        
+        // --- Gently rotate clouds for subtle movement ---
+        let cloudRotationSpeed = 0.0008;
+        
+        // --- Optional: subtle Earth's atmosphere glow (ring effect) - Just a nice touch ---
+        const atmosphereGeometry = new THREE.SphereGeometry(earthRadius + 0.03, 64, 64);
+        const atmosphereMaterial = new THREE.MeshPhongMaterial({
+            color: 0x88aaff,
+            transparent: true,
+            opacity: 0.08,
+            side: THREE.BackSide
+        });
+        const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+        scene.add(atmosphere);
+        
+        // --- Simple animated star twinkling effect by rotating starfield very slowly ---
+        let starRotationSpeed = 0.0001;
+        
+        // --- Responsive Handling ---
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        // --- Render Loop with smooth time delta ---
+        function animate() {
+            const now = performance.now();
+            let delta = Math.min(0.033, (now - lastTime) / 1000);
+            if (delta <= 0) { delta = 0.016; }
+            lastTime = now;
+            
+            // Update aircraft positions with smooth interpolation (delta-time independent)
+            updateAircraftPositions(delta);
+            
+            // Rotate cloud layer for atmospheric movement
+            clouds.rotation.y += 0.0006;
+            // subtle rotation of stars background for immersive effect
+            stars.rotation.y += 0.00005;
+            stars2.rotation.x += 0.00003;
+            
+            // Update directional light position to simulate sun angle (optional slight movement)
+            // This gives dynamic feel but not necessary for core visuals
+            const time = Date.now() * 0.0005;
+            sunLight.position.x = 12 * Math.cos(time * 0.1);
+            sunLight.position.z = 8 * Math.sin(time * 0.07);
+            
+            // Update rim light for dramatic shifts
+            rimLight.intensity = 0.4 + Math.sin(Date.now() * 0.002) * 0.1;
+            
+            // Update controls and render scene
+            controls.update(); // only needed if damping or autoRotate, but we call for smoothness
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+        
+        // Start animation
+        animate();
+        
+        // Small console log for production readiness
+        console.log('3D Flight Visualizer Ready | Real-time smooth interpolation | ' + aircrafts.length + ' active aircraft');
+        
+        // Add a very faint grid helper optionally for spatial reference? Not needed for aesthetics but invisible in space.
+        // To maintain clean look, we skip.
     </script>
 </body>
 </html>

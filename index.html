@@ -1,1779 +1,700 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0" />
   <title>CV Studio — Gabriel Hamonangan</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --black:#000;--bg:#080808;--s1:#0e0e0e;--s2:#141414;--s3:#1c1c1c;
+      --border:rgba(255,255,255,0.05);--border2:rgba(255,255,255,0.09);--border3:rgba(255,255,255,0.18);
+      --text:#fff;--muted:#555;--dim:#2a2a2a;
     }
+    html{scroll-behavior:smooth}
+    body{background:var(--black);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden}
 
-    :root {
-      --black: #000000;
-      --bg: #090909;
-      --s1: #111111;
-      --s2: #1a1a1a;
-      --s3: #222222;
-      --border: rgba(255, 255, 255, 0.06);
-      --border2: rgba(255, 255, 255, 0.12);
-      --border3: rgba(255, 255, 255, 0.2);
-      --text: #ffffff;
-      --muted: #888888;
-      --dim: #444444;
-      --accent: #ffffff;
-      --orange: #c45b1e;
-      --orange2: #e0713a;
-      --r: 4px;
-    }
-
-    html {
-      scroll-behavior: smooth
-    }
-
-    body {
-      background: var(--black);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 400;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* ━━ SCROLL REVEAL ━━ */
-    .reveal {
-      opacity: 0;
-      filter: blur(12px);
-      transform: translateY(24px);
-      transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        filter 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      filter: blur(0);
-      transform: translateY(0)
-    }
-
-    .reveal-d1 {
-      transition-delay: 0.1s
-    }
-
-    .reveal-d2 {
-      transition-delay: 0.2s
-    }
-
-    .reveal-d3 {
-      transition-delay: 0.3s
-    }
-
-    .reveal-d4 {
-      transition-delay: 0.4s
-    }
-
-    .reveal-d5 {
-      transition-delay: 0.5s
-    }
+    /* canvas bg */
+    #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 
     /* ━━ NAV ━━ */
-    .nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 40px;
-      height: 56px;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
+    .nav{
+      position:fixed;top:0;left:0;right:0;z-index:200;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 32px;height:52px;
+      background:rgba(0,0,0,.75);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+      border-bottom:1px solid var(--border);
     }
-
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      color: var(--text);
-      text-decoration: none;
-    }
-
-    .nav-logo .dot {
-      width: 10px;
-      height: 10px;
-      background: #fff;
-      border-radius: 1px;
-      display: inline-block;
-    }
-
-    .nav-center {
-      display: flex;
-      align-items: center;
-      gap: 4px
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 6px 14px;
-      border-radius: 4px;
-      color: var(--muted);
-      font-size: 0.875rem;
-      font-weight: 400;
-      cursor: pointer;
-      transition: color 0.2s;
-      text-decoration: none;
-      background: transparent;
-      border: none;
-    }
-
-    .nav-item:hover {
-      color: var(--text)
-    }
-
-    .nav-item svg {
-      width: 12px;
-      height: 12px;
-      opacity: 0.6
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 12px
-    }
-
-    .nav-cta {
-      padding: 7px 18px;
-      border-radius: 99px;
-      border: 1px solid var(--border3);
-      background: transparent;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.875rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s, border-color 0.2s;
-    }
-
-    .nav-cta:hover {
-      background: rgba(255, 255, 255, 0.08)
-    }
-
-    .nav-back {
-      display: none;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 18px;
-      border-radius: 99px;
-      border: 1px solid var(--border2);
-      background: transparent;
-      color: var(--muted);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.875rem;
-      font-weight: 400;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .nav-back:hover {
-      color: var(--text);
-      border-color: var(--border3)
-    }
-
-    .nav-back svg {
-      width: 14px;
-      height: 14px
-    }
+    .nav-logo{display:flex;align-items:center;gap:9px;font-size:.93rem;font-weight:700;letter-spacing:-.02em;color:var(--text);text-decoration:none}
+    /* mini 3d cube in logo */
+    .nlc{width:16px;height:16px;position:relative;transform-style:preserve-3d;animation:miniSpin 9s linear infinite;flex-shrink:0}
+    .nlc .f{position:absolute;inset:0;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.04)}
+    .nlc .fr{transform:translateZ(8px)}.nlc .bk{transform:rotateY(180deg) translateZ(8px)}
+    .nlc .lt{transform:rotateY(-90deg) translateZ(8px)}.nlc .rt{transform:rotateY(90deg) translateZ(8px)}
+    .nlc .tp{transform:rotateX(90deg) translateZ(8px)}.nlc .bt{transform:rotateX(-90deg) translateZ(8px)}
+    @keyframes miniSpin{0%{transform:rotateX(22deg) rotateY(0deg)}100%{transform:rotateX(22deg) rotateY(360deg)}}
+    .nav-cta{padding:6px 18px;border-radius:99px;border:1px solid var(--border3);background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;transition:all .2s}
+    .nav-cta:hover{background:rgba(255,255,255,.07)}
+    .nav-back{display:none;align-items:center;gap:6px;padding:6px 16px;border-radius:99px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s}
+    .nav-back:hover{color:var(--text);border-color:var(--border3)}
+    .nav-back svg{width:13px;height:13px}
 
     /* ━━ PAGES ━━ */
-    .page {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-        transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow-y: auto;
-      padding-top: 56px;
-      scroll-behavior: smooth;
-    }
-
-    .page.hidden {
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(16px)
-    }
-
-    .page.slide-out {
-      opacity: 0;
-      transform: translateX(-32px)
-    }
-
-    .page.slide-in {
-      opacity: 0;
-      transform: translateX(32px)
-    }
-
-    /* ━━━━━━━━━━━━━━━━━━━
-   PAGE 1 — LANDING
-━━━━━━━━━━━━━━━━━━━ */
-    #pg-landing {
-      background: var(--black)
-    }
-
-    /* HERO */
-    .hero {
-      min-height: calc(100vh - 56px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 80px 24px 60px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* 3D Cube */
-    .cube-wrap {
-      margin-bottom: 52px;
-      perspective: 600px;
-      animation: heroFadeIn 1s 0.1s ease both;
-    }
-
-    .cube {
-      width: 120px;
-      height: 120px;
-      margin: 0 auto;
-      position: relative;
-      transform-style: preserve-3d;
-      animation: cubeSpin 18s linear infinite;
-    }
-
-    .cube-face {
-      position: absolute;
-      width: 120px;
-      height: 120px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      backface-visibility: hidden;
-    }
-
-    .cf-front {
-      background: linear-gradient(135deg, #3a1a0a 0%, #c45b1e 50%, #8b3510 100%);
-      transform: translateZ(60px)
-    }
-
-    .cf-back {
-      background: linear-gradient(135deg, #8b3510 0%, #c45b1e 50%, #3a1a0a 100%);
-      transform: rotateY(180deg) translateZ(60px)
-    }
-
-    .cf-left {
-      background: linear-gradient(135deg, #2a1208 0%, #9d4a18 100%);
-      transform: rotateY(-90deg) translateZ(60px)
-    }
-
-    .cf-right {
-      background: linear-gradient(135deg, #9d4a18 0%, #2a1208 100%);
-      transform: rotateY(90deg) translateZ(60px)
-    }
-
-    .cf-top {
-      background: linear-gradient(135deg, #5a2510 0%, #c45b1e 100%);
-      transform: rotateX(90deg) translateZ(60px)
-    }
-
-    .cf-bottom {
-      background: linear-gradient(135deg, #c45b1e 0%, #5a2510 100%);
-      transform: rotateX(-90deg) translateZ(60px)
-    }
-
-    /* Glow under cube */
-    .cube-wrap::after {
-      content: '';
-      display: block;
-      width: 180px;
-      height: 40px;
-      margin: -20px auto 0;
-      background: radial-gradient(ellipse, rgba(196, 91, 30, 0.3) 0%, transparent 70%);
-      filter: blur(12px);
-    }
-
-    @keyframes cubeSpin {
-      0% {
-        transform: rotateX(15deg) rotateY(0deg)
-      }
-
-      100% {
-        transform: rotateX(15deg) rotateY(360deg)
-      }
-    }
-
-    .hero-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border2);
-      color: var(--muted);
-      font-size: 0.78rem;
-      font-weight: 400;
-      letter-spacing: 0.02em;
-      padding: 5px 16px;
-      border-radius: 99px;
-      margin-bottom: 28px;
-      animation: heroFadeIn 0.8s 0.2s ease both;
-    }
-
-    .hero-h1 {
-      font-size: clamp(3rem, 8vw, 5.5rem);
-      font-weight: 700;
-      line-height: 1.04;
-      letter-spacing: -0.03em;
-      color: var(--text);
-      animation: heroFadeIn 0.8s 0.3s ease both;
-    }
-
-    .hero-h1 em {
-      font-style: normal;
-      color: var(--text)
-    }
-
-    .hero-sub {
-      margin-top: 24px;
-      color: var(--muted);
-      font-size: 1.05rem;
-      font-weight: 400;
-      max-width: 520px;
-      margin-inline: auto;
-      line-height: 1.7;
-      animation: heroFadeIn 0.8s 0.4s ease both;
-    }
-
-    .hero-btns {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 40px;
-      flex-wrap: wrap;
-      animation: heroFadeIn 0.8s 0.5s ease both;
-    }
-
-    .btn-hero-primary {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 13px 28px;
-      border-radius: 99px;
-      background: var(--text);
-      border: none;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #000;
-      letter-spacing: -0.01em;
-      transition: all 0.2s;
-    }
-
-    .btn-hero-primary:hover {
-      background: #e0e0e0;
-      transform: translateY(-1px)
-    }
-
-    .btn-hero-primary svg {
-      width: 16px;
-      height: 16px
-    }
-
-    .btn-hero-ghost {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 13px 28px;
-      border-radius: 99px;
-      background: transparent;
-      border: 1px solid var(--border3);
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--text);
-      transition: all 0.2s;
-    }
-
-    .btn-hero-ghost:hover {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(255, 255, 255, 0.3)
-    }
-
-    @keyframes heroFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px)
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0)
-      }
-    }
-
-    /* ━━ FEATURES 3-col ━━ */
-    .features-section {
-      padding: 100px 40px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .feat-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .feat-col {
-      padding: 48px 40px 48px 0;
-      border-right: 1px solid var(--border);
-    }
-
-    .feat-col:last-child {
-      border-right: none;
-      padding-right: 0;
-      padding-left: 40px
-    }
-
-    .feat-col:nth-child(2) {
-      padding-left: 40px
-    }
-
-    .feat-ico {
-      width: 40px;
-      height: 40px;
-      margin-bottom: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .feat-ico svg {
-      width: 24px;
-      height: 24px;
-      stroke: var(--text)
-    }
-
-    .feat-t {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 12px;
-      letter-spacing: -0.02em
-    }
-
-    .feat-s {
-      font-size: 0.875rem;
-      color: var(--muted);
-      line-height: 1.7;
-      font-weight: 400
-    }
-
-    .feat-divider {
-      margin-top: 40px;
-      border-top: 1px solid var(--border)
-    }
-
-    /* ━━ PROMPT SECTION ━━ */
-    .prompt-section {
-      padding: 80px 40px 100px;
-      max-width: 1200px;
-      margin: 0 auto;
-      border-top: 1px solid var(--border);
-    }
-
-    .sect-label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .sect-label::before {
-      content: '';
-      display: block;
-      width: 24px;
-      height: 1px;
-      background: var(--dim);
-    }
-
-    .sect-h2 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      margin-bottom: 16px;
-    }
-
-    .sect-h2 em {
-      font-style: normal;
-      color: var(--muted)
-    }
-
-    .prompt-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      margin-top: 48px;
-      align-items: start;
-    }
-
-    .prompt-left {}
-
-    .prompt-desc {
-      font-size: 0.9rem;
-      color: var(--muted);
-      line-height: 1.75;
-      max-width: 360px;
-      margin-bottom: 32px
-    }
-
-    .steps-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0
-    }
-
-    .step-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      padding: 20px 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .step-num {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      color: var(--dim);
-      padding-top: 2px;
-      flex-shrink: 0;
-      min-width: 20px;
-    }
-
-    .step-content {}
-
-    .step-t {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 4px
-    }
-
-    .step-s {
-      font-size: 0.8rem;
-      color: var(--muted);
-      line-height: 1.6
-    }
-
-    /* Prompt Card */
-    .p-card {
-      background: var(--s1);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .p-topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 16px;
-      background: var(--s2);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .p-dots {
-      display: flex;
-      gap: 5px
-    }
-
-    .pdot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%
-    }
-
-    .pd-r {
-      background: #ff5f57
-    }
-
-    .pd-y {
-      background: #febc2e
-    }
-
-    .pd-g {
-      background: #28c840
-    }
-
-    .p-fname {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.68rem;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn-copy-sm {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border2);
-      color: var(--muted);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.72rem;
-      font-weight: 500;
-      padding: 4px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-copy-sm:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text)
-    }
-
-    .btn-copy-sm.ok {
-      background: rgba(40, 200, 90, 0.1);
-      border-color: rgba(40, 200, 90, 0.3);
-      color: #28c840
-    }
-
-    .p-body {
-      padding: 20px;
-      max-height: 360px;
-      overflow-y: auto
-    }
-
-    .p-body::-webkit-scrollbar {
-      width: 3px
-    }
-
-    .p-body::-webkit-scrollbar-thumb {
-      background: var(--dim);
-      border-radius: 3px
-    }
-
-    .p-text {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      line-height: 1.85;
-      color: #666;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .pk {
-      color: #8ab4f8
-    }
-
-    .pv {
-      color: #80cbc4
-    }
-
-    .pn {
-      color: #ce93d8
-    }
-
-    .pb {
-      color: #ffffff;
-      opacity: 0.8
-    }
-
-    /* CTA row */
-    .cta-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 24px;
-    }
-
-    .btn-primary {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      border-radius: 99px;
-      background: var(--text);
-      border: none;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #000;
-      transition: all 0.2s;
-    }
-
-    .btn-primary:hover {
-      background: #e0e0e0;
-      transform: translateY(-1px)
-    }
-
-    .btn-primary svg {
-      width: 14px;
-      height: 14px
-    }
-
-    .btn-ghost {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      border-radius: 99px;
-      background: transparent;
-      border: 1px solid var(--border2);
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--muted);
-      transition: all 0.2s;
-    }
-
-    .btn-ghost:hover {
-      color: var(--text);
-      border-color: var(--border3)
-    }
-
-    .btn-ghost.ok {
-      color: #28c840;
-      border-color: rgba(40, 200, 90, 0.3)
-    }
-
-    /* ━━ TRUSTED ━━ */
-    .trusted-section {
-      padding: 60px 40px 80px;
-      border-top: 1px solid var(--border);
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .trusted-lbl {
-      font-size: 0.8rem;
-      color: var(--dim);
-      margin-bottom: 32px;
-      letter-spacing: 0.05em
-    }
-
-    .trusted-logos {
-      display: flex;
-      align-items: center;
-      gap: 48px;
-      flex-wrap: wrap
-    }
-
-    .tlogo {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--dim);
-      letter-spacing: -0.01em;
-      transition: color 0.2s;
-      white-space: nowrap;
-      cursor: default;
-    }
-
-    .tlogo:hover {
-      color: var(--muted)
-    }
-
-    /* ━━ FOOTER ━━ */
-    .foot {
-      padding: 40px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .foot-logo {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .foot-logo .dot {
-      width: 8px;
-      height: 8px;
-      background: #fff;
-      border-radius: 1px;
-      display: inline-block
-    }
-
-    .foot-info {
-      font-size: 0.75rem;
-      color: var(--dim);
-      text-align: right;
-      line-height: 1.6
-    }
-
-    /* ━━━━━━━━━━━━━━━━━━━
-   PAGE 2 — TOOL
-━━━━━━━━━━━━━━━━━━━ */
-    #pg-tool {
-      background: var(--black);
-      overflow: hidden
-    }
-
-    .tool-wrap {
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      height: calc(100vh - 56px);
-      position: relative;
-      z-index: 1;
-    }
-
-    /* LEFT */
-    .t-left {
-      display: flex;
-      flex-direction: column;
-      background: var(--s1);
-      border-right: 1px solid var(--border);
-      overflow: hidden;
-    }
-
-    .t-left-head {
-      padding: 20px 20px 16px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .t-section-lbl {
-      font-size: 0.65rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--dim);
-      margin-bottom: 4px;
-      display: block;
-      font-family: 'DM Mono', monospace;
-    }
-
-    .t-left-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--text);
-      letter-spacing: -0.01em
-    }
-
-    .t-editor-area {
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      padding: 0 16px 12px
-    }
-
-    .t-editor-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 0 8px;
-    }
-
-    .t-dots {
-      display: flex;
-      gap: 5px
-    }
-
-    .tdot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%
-    }
-
-    .td-r {
-      background: #ff5f57
-    }
-
-    .td-y {
-      background: #febc2e
-    }
-
-    .td-g {
-      background: #28c840
-    }
-
-    .t-lang {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      color: var(--dim)
-    }
-
-    #code-in {
-      flex: 1;
-      width: 100%;
-      resize: none;
-      background: #050505;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: #666;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.71rem;
-      line-height: 1.65;
-      padding: 14px;
-      outline: none;
-      caret-color: var(--text);
-      transition: border-color 0.2s;
-    }
-
-    #code-in::placeholder {
-      color: var(--dim);
-      font-size: 0.7rem
-    }
-
-    #code-in:focus {
-      border-color: rgba(255, 255, 255, 0.15)
-    }
-
-    .t-char {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      color: var(--dim);
-      text-align: right;
-      padding: 5px 0 0
-    }
-
-    .t-left-foot {
-      padding: 14px 16px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      flex-shrink: 0;
-    }
-
-    .t-btn-row {
-      display: flex;
-      gap: 8px;
-      align-items: center
-    }
-
-    .tbtn {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      padding: 10px 14px;
-      border-radius: 6px;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 600;
-      font-size: 0.82rem;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      letter-spacing: -0.01em;
-    }
-
-    .tbtn:disabled {
-      opacity: 0.25;
-      cursor: not-allowed
-    }
-
-    .tbtn-prev {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border2);
-      color: var(--text);
-    }
-
-    .tbtn-prev:not(:disabled):hover {
-      background: rgba(255, 255, 255, 0.1)
-    }
-
-    .tbtn-dl {
-      background: var(--text);
-      color: #000;
-      box-shadow: none;
-    }
-
-    .tbtn-dl:not(:disabled):hover {
-      background: #e0e0e0;
-      transform: translateY(-1px)
-    }
-
-    .tbtn-dl svg,
-    .tbtn-prev svg {
-      width: 14px;
-      height: 14px
-    }
-
-    .tbtn-clr {
-      flex: 0 0 auto;
-      width: 40px;
-      padding: 10px;
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--dim);
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-
-    .tbtn-clr:not(:disabled):hover {
-      border-color: rgba(255, 80, 80, 0.4);
-      color: rgba(255, 100, 100, 0.8)
-    }
-
-    .tbtn-clr:disabled {
-      opacity: 0.2;
-      cursor: not-allowed
-    }
-
-    .t-prog {
-      display: none;
-      flex-direction: column;
-      gap: 5px
-    }
-
-    .t-prog.show {
-      display: flex
-    }
-
-    .t-prog-lbl {
-      font-size: 0.7rem;
-      color: var(--muted);
-      font-family: 'DM Mono', monospace
-    }
-
-    .t-prog-bg {
-      background: var(--s3);
-      border-radius: 99px;
-      height: 2px;
-      overflow: hidden
-    }
-
-    .t-prog-bar {
-      background: var(--text);
-      height: 100%;
-      width: 0%;
-      border-radius: 99px;
-      transition: width 0.3s
-    }
-
-    /* RIGHT */
-    .t-right {
-      display: flex;
-      flex-direction: column;
-      background: var(--bg)
-    }
-
-    .t-preview-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 18px;
-      border-bottom: 1px solid var(--border);
-      background: var(--s1);
-      flex-shrink: 0;
-    }
-
-    .tpb-dots {
-      display: flex;
-      gap: 5px
-    }
-
-    .tpdot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%
-    }
-
-    .tpd-r {
-      background: #ff5f57
-    }
-
-    .tpd-y {
-      background: #febc2e
-    }
-
-    .tpd-g {
-      background: #28c840
-    }
-
-    .tpb-addr {
-      flex: 1;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.66rem;
-      color: var(--dim);
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 3px 10px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .tpb-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.66rem;
-      color: var(--dim)
-    }
-
-    .t-stage {
-      flex: 1;
-      overflow: auto;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 28px 20px;
-      background: #111;
-    }
-
-    .t-empty {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      pointer-events: none;
-    }
-
-    .t-empty-ico {
-      width: 72px;
-      height: 72px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-    }
-
-    .t-empty-t {
-      font-size: 0.95rem;
-      font-weight: 500;
-      color: var(--muted)
-    }
-
-    .t-empty-s {
-      font-size: 0.8rem;
-      color: var(--dim);
-      max-width: 220px;
-      line-height: 1.6
-    }
-
-    .t-frame-wrap {
-      display: none;
-      flex-shrink: 0;
-      width: min(794px, 100%);
-      border-radius: 2px;
-      overflow: hidden;
-      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.04);
-    }
-
-    .t-frame-wrap.show {
-      display: block
-    }
-
-    #pframe {
-      width: 794px;
-      min-height: 1123px;
-      border: none;
-      display: block;
-      background: #fff;
-      transform-origin: top left;
-    }
-
-    #rhost {
-      position: fixed;
-      left: -9999px;
-      top: 0;
-      width: 794px;
-      background: white;
-      z-index: -1;
-      overflow: visible
-    }
-
-    /* ━━ TOAST ━━ */
-    .toast {
-      position: fixed;
-      bottom: 28px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      z-index: 999;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--s2);
-      border: 1px solid rgba(40, 200, 90, 0.3);
-      color: #28c840;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 500;
-      padding: 11px 22px;
-      border-radius: 99px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
-      opacity: 0;
-      pointer-events: none;
-      white-space: nowrap;
-    }
-
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1
-    }
-
-    /* ━━ RESPONSIVE ━━ */
-    @media(max-width:900px) {
-      .prompt-layout {
-        grid-template-columns: 1fr
-      }
-
-      .features-section,
-      .prompt-section {
-        padding-left: 24px;
-        padding-right: 24px
-      }
-
-      .foot {
-        padding: 32px 24px;
-        flex-direction: column;
-        gap: 16px;
-        text-align: center
-      }
-
-      .foot-info {
-        text-align: center
-      }
-    }
-
-    @media(max-width:680px) {
-      .feat-grid {
-        grid-template-columns: 1fr
-      }
-
-      .feat-col {
-        border-right: none;
-        padding: 32px 0;
-        border-top: 1px solid var(--border)
-      }
-
-      .feat-col:first-child {
-        border-top: none
-      }
-
-      .tool-wrap {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
-        height: auto
-      }
-
-      .t-left {
-        max-height: 52vh
-      }
-
-      .t-right {
-        min-height: 55vw
-      }
-
-      .nav {
-        padding: 0 20px
-      }
-
-      .hero {
-        padding: 60px 20px 48px
-      }
-
-      .hero-btns {
-        flex-direction: column
-      }
-
-      .btn-hero-primary,
-      .btn-hero-ghost {
-        width: 100%;
-        justify-content: center
-      }
-    }
-
-    .fab-dl {
-      display: none;
-    }
-
-    @media(max-width:680px) {
-      .fab-dl {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        background: var(--text);
-        color: #000;
-        border: none;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-        z-index: 999;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s;
-      }
-
-      .fab-dl svg {
-        width: 24px;
-        height: 24px;
-      }
-
-      .fab-dl.show {
-        display: flex;
-        animation: fabIn 0.4s both;
-      }
-
-      @keyframes fabIn {
-        from {
-          transform: scale(0) rotate(-15deg);
-          opacity: 0;
-        }
-
-        to {
-          transform: scale(1) rotate(0);
-          opacity: 1;
-        }
-      }
+    .page{position:fixed;inset:0;z-index:1;transition:opacity .44s cubic-bezier(.4,0,.2,1),transform .44s cubic-bezier(.4,0,.2,1);overflow-y:auto;padding-top:52px;-webkit-overflow-scrolling:touch}
+    .page.hidden{opacity:0;pointer-events:none;transform:translateY(14px)}
+    .page.slide-out{opacity:0;transform:translateX(-30px)}
+    .page.slide-in{opacity:0;transform:translateX(30px)}
+
+    /* ━━━━━━━━━━━━━━
+       LANDING PAGE
+    ━━━━━━━━━━━━━━ */
+    #pg-landing{background:transparent}
+
+    .ob-wrap{
+      min-height:calc(100vh - 52px);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:72px 24px 100px;position:relative;
+    }
+
+    /* Hero 3D Cube */
+    .cube-scene{perspective:700px;margin-bottom:52px;animation:fadeUp .9s .05s both}
+    .hcube{
+      width:88px;height:88px;margin:0 auto;
+      position:relative;transform-style:preserve-3d;
+      animation:hSpin 16s linear infinite;
+    }
+    .hcf{position:absolute;width:88px;height:88px;backface-visibility:hidden;border:1px solid rgba(255,255,255,.1)}
+    .hcf-fr{background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.01));transform:translateZ(44px)}
+    .hcf-bk{background:rgba(255,255,255,.02);transform:rotateY(180deg) translateZ(44px)}
+    .hcf-lt{background:rgba(255,255,255,.03);transform:rotateY(-90deg) translateZ(44px)}
+    .hcf-rt{background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.01));transform:rotateY(90deg) translateZ(44px)}
+    .hcf-tp{background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.03));transform:rotateX(90deg) translateZ(44px)}
+    .hcf-bt{background:rgba(255,255,255,.01);transform:rotateX(-90deg) translateZ(44px)}
+    .cube-scene::after{content:'';display:block;width:120px;height:24px;margin:-8px auto 0;background:radial-gradient(ellipse,rgba(255,255,255,.1) 0%,transparent 70%);filter:blur(12px)}
+    @keyframes hSpin{0%{transform:rotateX(18deg) rotateY(0)}100%{transform:rotateX(18deg) rotateY(360deg)}}
+
+    /* Title */
+    .ob-title{text-align:center;margin-bottom:60px}
+    .ob-badge{
+      display:inline-flex;align-items:center;gap:8px;
+      background:rgba(255,255,255,.03);border:1px solid var(--border2);
+      color:var(--muted);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;font-weight:500;
+      padding:5px 18px;border-radius:99px;margin-bottom:22px;
+      animation:fadeUp .7s .18s both;
+    }
+    .ob-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.4);animation:blink 2.4s ease-in-out infinite}
+    @keyframes blink{0%,100%{opacity:.4}50%{opacity:.1}}
+    .ob-h1{
+      font-size:clamp(2.3rem,6vw,3.9rem);font-weight:700;line-height:1.07;letter-spacing:-.04em;
+      animation:fadeUp .7s .24s both;
+      background:linear-gradient(170deg,rgba(255,255,255,1) 30%,rgba(255,255,255,.38));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .ob-sub{margin-top:15px;color:var(--muted);font-size:.9rem;max-width:380px;margin-inline:auto;line-height:1.75;animation:fadeUp .7s .3s both}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ━━ STEPS ━━ */
+    .steps-flow{display:flex;flex-direction:column;align-items:center;width:100%;max-width:500px}
+
+    .sbw{
+      display:flex;flex-direction:column;align-items:center;width:100%;
+      opacity:0;filter:blur(16px);transform:translateY(30px);
+      transition:opacity .75s cubic-bezier(.22,1,.36,1),filter .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1);
+    }
+    .sbw.vis{opacity:1;filter:blur(0);transform:translateY(0)}
+
+    .sbubble{
+      width:100%;
+      background:linear-gradient(148deg, #111 0%, #0c0c0c 100%);
+      border:1px solid var(--border2);
+      border-radius:20px;
+      padding:22px 24px 22px 20px;
+      display:flex;align-items:flex-start;gap:18px;
+      position:relative;overflow:hidden;
+      cursor:default;
+      transform:perspective(900px) rotateX(0) rotateY(0);
+      transition:border-color .3s,box-shadow .3s,transform .35s cubic-bezier(.22,1,.36,1);
+      box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 6px 32px rgba(0,0,0,.45);
+    }
+    /* top edge gleam */
+    .sbubble::before{
+      content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent);
+      border-radius:99px;
+    }
+    /* shimmer sweep */
+    .sbubble::after{
+      content:'';position:absolute;top:0;left:-70%;width:50%;height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.035),transparent);
+      transform:skewX(-15deg);transition:left .65s ease;pointer-events:none;
+    }
+    .sbubble:hover::after{left:130%}
+    .sbubble:hover{
+      border-color:rgba(255,255,255,.16);
+      box-shadow:0 1px 0 rgba(255,255,255,.07) inset,0 18px 56px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.04);
+    }
+    /* CTA variant */
+    .sbubble.cta{
+      background:linear-gradient(148deg,rgba(255,255,255,.065) 0%,rgba(255,255,255,.02) 100%);
+      border-color:rgba(255,255,255,.16);
+      box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 10px 44px rgba(0,0,0,.5);
+    }
+    .sbubble.cta::before{background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent)}
+    .sbubble.cta:hover{border-color:rgba(255,255,255,.28);box-shadow:0 1px 0 rgba(255,255,255,.1) inset,0 22px 72px rgba(0,0,0,.6),0 0 36px rgba(255,255,255,.03)}
+
+    .snc{
+      flex-shrink:0;width:38px;height:38px;border-radius:50%;
+      background:#111;border:1px solid var(--border2);
+      display:flex;align-items:center;justify-content:center;
+      font-family:'DM Mono',monospace;font-size:.68rem;color:var(--muted);
+      transition:all .3s;
+    }
+    .sbubble:hover .snc{border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.6)}
+    .cta .snc{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.22);color:rgba(255,255,255,.9)}
+    .sbody{flex:1;min-width:0}
+    .st{font-size:.93rem;font-weight:600;color:rgba(255,255,255,.88);margin-bottom:6px;letter-spacing:-.01em}
+    .sd{font-size:.78rem;color:var(--muted);line-height:1.72}
+    .sd strong{color:rgba(255,255,255,.6);font-weight:600}
+
+    /* Arrow between */
+    .sarrow{display:flex;align-items:center;justify-content:center;height:34px;position:relative}
+    .sarrow-line{position:absolute;width:1px;height:100%;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02))}
+    .sarrow svg{width:15px;height:15px;color:rgba(255,255,255,.18);position:relative;z-index:1;animation:aBounce 2.2s ease-in-out infinite}
+    @keyframes aBounce{0%,100%{transform:translateY(-2px)}50%{transform:translateY(2px)}}
+
+    /* CTA block */
+    .ob-cta{
+      margin-top:48px;width:100%;max-width:500px;
+      display:flex;flex-direction:column;align-items:center;gap:14px;
+      opacity:0;filter:blur(10px);transform:translateY(22px);
+      transition:opacity .75s .1s,filter .75s .1s,transform .75s .1s;
+    }
+    .ob-cta.vis{opacity:1;filter:blur(0);transform:translateY(0)}
+
+    .btn-main{
+      width:100%;padding:19px 32px;border-radius:17px;
+      background:linear-gradient(165deg,#fff 0%,#d0d0d0 100%);
+      border:none;cursor:pointer;
+      font-family:'DM Sans',sans-serif;font-size:1.06rem;font-weight:700;color:#000;letter-spacing:-.025em;
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      position:relative;overflow:hidden;
+      box-shadow:0 4px 0 rgba(0,0,0,.35),0 10px 40px rgba(255,255,255,.07);
+      transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s;
+    }
+    .btn-main::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.5) 50%,transparent 100%);
+      transform:translateX(-100%);transition:transform .55s ease;
+    }
+    .btn-main:hover::after{transform:translateX(100%)}
+    .btn-main:hover{transform:translateY(-3px);box-shadow:0 7px 0 rgba(0,0,0,.35),0 18px 56px rgba(255,255,255,.12)}
+    .btn-main:active{transform:translateY(0);box-shadow:0 2px 0 rgba(0,0,0,.35)}
+    .btn-main svg{width:17px;height:17px}
+    .ob-or{font-size:.7rem;color:rgba(255,255,255,.15);letter-spacing:.05em}
+    .btn-copy{
+      display:inline-flex;align-items:center;gap:8px;padding:10px 26px;border-radius:99px;
+      background:transparent;border:1px solid var(--border2);
+      color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;
+      cursor:pointer;transition:all .22s;
+    }
+    .btn-copy:hover{color:rgba(255,255,255,.75);border-color:var(--border3);background:rgba(255,255,255,.03)}
+    .btn-copy.ok{color:#28c840;border-color:rgba(40,200,90,.28)}
+    .btn-copy svg{width:13px;height:13px}
+
+    .ob-foot{position:absolute;bottom:26px;left:0;right:0;text-align:center;font-size:.67rem;color:rgba(255,255,255,.15);letter-spacing:.04em}
+
+    /* ━━━━━━━━━━━━━━
+       TOOL PAGE
+    ━━━━━━━━━━━━━━ */
+    #pg-tool{background:var(--black);overflow:hidden}
+    .tool-wrap{display:grid;grid-template-columns:400px 1fr;height:calc(100vh - 52px);position:relative;z-index:1}
+
+    /* Left */
+    .t-left{display:flex;flex-direction:column;background:var(--s1);border-right:1px solid var(--border);overflow:hidden}
+    .t-lh{padding:18px 20px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+    .t-sl{font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:4px;display:block;font-family:'DM Mono',monospace}
+    .t-lt{font-size:.88rem;font-weight:600;color:var(--text);letter-spacing:-.01em}
+    .t-ea{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:0 14px 10px}
+    .t-eb{display:flex;align-items:center;justify-content:space-between;padding:10px 0 6px}
+    .t-dots{display:flex;gap:5px}
+    .tdot{width:8px;height:8px;border-radius:50%}
+    .td-r{background:#ff5f57}.td-y{background:#febc2e}.td-g{background:#28c840}
+    .t-lang{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--dim)}
+    .ph{
+      display:flex;align-items:center;gap:8px;padding:8px 13px;border-radius:8px;margin-bottom:7px;
+      background:rgba(255,255,255,.02);border:1px dashed rgba(255,255,255,.07);
+      font-size:.7rem;color:var(--dim);
+    }
+    .ph svg{width:12px;height:12px;flex-shrink:0;color:rgba(255,255,255,.25);animation:aBounce 2.2s ease-in-out infinite}
+    .ph strong{color:rgba(255,255,255,.35)}
+    #code-in{
+      flex:1;width:100%;resize:none;background:#030303;border:1px solid var(--border);border-radius:8px;
+      color:#777;font-family:'DM Mono',monospace;font-size:.7rem;line-height:1.65;
+      padding:14px;outline:none;caret-color:#fff;transition:border-color .2s;-webkit-overflow-scrolling:touch;
+    }
+    #code-in::placeholder{color:var(--dim);font-size:.67rem}
+    #code-in:focus{border-color:rgba(255,255,255,.12)}
+    .t-ch{font-family:'DM Mono',monospace;font-size:.57rem;color:var(--dim);text-align:right;padding:4px 0 0}
+    .t-lf{padding:14px 14px 16px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:9px;flex-shrink:0}
+    .t-br{display:flex;gap:8px;align-items:stretch}
+    .btn-dl{
+      flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+      padding:14px 16px;border-radius:10px;
+      background:linear-gradient(160deg,#fff,#c8c8c8);border:none;cursor:pointer;
+      font-family:'DM Sans',sans-serif;font-weight:700;font-size:.86rem;color:#000;letter-spacing:-.01em;
+      transition:all .22s;box-shadow:0 3px 0 rgba(0,0,0,.45);
+      position:relative;overflow:hidden;
+    }
+    .btn-dl::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:translateX(-100%);transition:transform .5s}
+    .btn-dl:not(:disabled):hover::after{transform:translateX(100%)}
+    .btn-dl:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 5px 0 rgba(0,0,0,.45),0 8px 28px rgba(255,255,255,.07)}
+    .btn-dl:not(:disabled):active{transform:translateY(0);box-shadow:0 1px 0 rgba(0,0,0,.45)}
+    .btn-dl:disabled{opacity:.2;cursor:not-allowed}
+    .btn-dl svg{width:14px;height:14px}
+    .btn-prev{
+      flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:6px;
+      padding:14px 15px;border-radius:10px;
+      background:rgba(255,255,255,.04);border:1px solid var(--border2);
+      color:rgba(255,255,255,.65);font-family:'DM Sans',sans-serif;font-weight:600;font-size:.78rem;
+      cursor:pointer;transition:all .2s;white-space:nowrap;
+    }
+    .btn-prev:not(:disabled):hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18)}
+    .btn-prev:disabled{opacity:.18;cursor:not-allowed}
+    .btn-prev svg{width:13px;height:13px}
+    .btn-clr{
+      flex:0 0 auto;width:40px;padding:0;background:transparent;border:1px solid var(--border);
+      color:var(--dim);border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;
+    }
+    .btn-clr:not(:disabled):hover{border-color:rgba(255,50,50,.25);color:rgba(255,70,70,.6)}
+    .btn-clr:disabled{opacity:.15;cursor:not-allowed}
+    .t-al{display:flex;gap:8px;align-items:center}
+    .t-lbl{flex:1;text-align:center;font-size:.58rem;color:var(--dim);font-family:'DM Mono',monospace}
+    .t-lbl-s{flex:0 0 auto;width:40px;text-align:center;font-size:.57rem;color:var(--dim)}
+    .t-prog{display:none;flex-direction:column;gap:4px}
+    .t-prog.show{display:flex}
+    .t-pl{font-size:.66rem;color:var(--muted);font-family:'DM Mono',monospace}
+    .t-pb{background:var(--s3);border-radius:99px;height:2px;overflow:hidden}
+    .t-pbar{background:#fff;height:100%;width:0%;border-radius:99px;transition:width .3s}
+
+    /* Right */
+    .t-right{display:flex;flex-direction:column;background:#080808}
+    .t-pvbar{display:flex;align-items:center;gap:10px;padding:8px 16px;border-bottom:1px solid var(--border);background:var(--s1);flex-shrink:0}
+    .tpbd{display:flex;gap:4px}
+    .tpdot{width:8px;height:8px;border-radius:50%}
+    .tpd-r{background:#ff5f57}.tpd-y{background:#febc2e}.tpd-g{background:#28c840}
+    .tpb-addr{flex:1;font-family:'DM Mono',monospace;font-size:.59rem;color:var(--dim);background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:4px;padding:3px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tpb-tag{font-family:'DM Mono',monospace;font-size:.59rem;color:var(--dim);white-space:nowrap}
+    .t-stage{flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;background:#090909;-webkit-overflow-scrolling:touch}
+    .t-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;width:100%;height:100%;text-align:center;pointer-events:none}
+    .t-eico{width:60px;height:60px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+    .t-et{font-size:.86rem;font-weight:500;color:var(--muted)}
+    .t-es{font-size:.74rem;color:var(--dim);max-width:190px;line-height:1.6}
+    .t-fw{display:none;flex-shrink:0;width:min(794px,100%);border-radius:2px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.04)}
+    .t-fw.show{display:block}
+    #pframe{width:794px;min-height:1123px;border:none;display:block;background:#fff;transform-origin:top left}
+    #rhost{position:fixed;left:-9999px;top:0;width:794px;background:white;z-index:-1;overflow:visible}
+
+    /* Toast */
+    .toast{
+      position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);z-index:999;
+      display:flex;align-items:center;gap:10px;
+      background:rgba(8,8,8,.96);border:1px solid rgba(40,200,90,.22);color:#28c840;
+      font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;
+      padding:10px 22px;border-radius:99px;box-shadow:0 8px 36px rgba(0,0,0,.75);
+      transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s;
+      opacity:0;pointer-events:none;white-space:nowrap;
+    }
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+    /* Mobile sheet */
+    .dl-sheet{
+      display:none;position:fixed;bottom:0;left:0;right:0;z-index:300;
+      background:var(--s2);border-top:1px solid var(--border2);
+      padding:13px 16px calc(13px + env(safe-area-inset-bottom));
+      border-radius:18px 18px 0 0;box-shadow:0 -16px 64px rgba(0,0,0,.85);
+      transform:translateY(100%);transition:transform .34s cubic-bezier(.32,0,.64,1);
+    }
+    .dl-sheet.show{transform:translateY(0)}
+    @media(max-width:768px){.dl-sheet{display:block}}
+    .dsh{width:34px;height:3px;border-radius:99px;background:var(--dim);margin:0 auto 13px}
+    .dst{font-size:.7rem;color:var(--muted);text-align:center;margin-bottom:12px;font-family:'DM Mono',monospace}
+    .dsb{display:flex;gap:10px}
+    .ds-prev{flex:1;padding:15px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--border2);color:rgba(255,255,255,.65);font-family:'DM Sans',sans-serif;font-weight:600;font-size:.83rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .2s}
+    .ds-prev:disabled{opacity:.18;cursor:not-allowed}
+    .ds-dl{flex:2;padding:15px;border-radius:12px;background:linear-gradient(160deg,#fff,#ccc);border:none;color:#000;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;box-shadow:0 3px 0 rgba(0,0,0,.35)}
+    .ds-dl:disabled{opacity:.2;cursor:not-allowed}
+    .ds-dl svg,.ds-prev svg{width:15px;height:15px}
+
+    /* Mobile responsive */
+    @media(max-width:768px){
+      .nav{padding:0 16px}
+      .nav-logo{font-size:.86rem}
+      .nav-cta,.nav-back{font-size:.73rem;padding:5px 13px}
+      #pg-tool{overflow:auto}
+      .tool-wrap{display:flex;flex-direction:column;height:auto;min-height:calc(100vh - 52px)}
+      .t-left{flex-shrink:0;border-right:none;border-bottom:1px solid var(--border2)}
+      .t-lh{padding:13px 15px 11px}
+      .t-ea{padding:0 12px 10px}
+      #code-in{min-height:180px;height:30vh;max-height:270px;font-size:.67rem}
+      .btn-dl{padding:15px;font-size:.88rem}
+      .btn-prev{padding:15px 14px}
+      .t-right{flex:1;min-height:55vw}
+      .t-pvbar{padding:7px 12px}
+      .tpb-tag{display:none}
+      .t-stage{padding:13px 10px}
+      .t-lf{padding:11px 12px 13px}
+    }
+    @media(max-width:480px){
+      .ob-wrap{padding:46px 16px 82px}
+      .ob-h1{font-size:2.15rem}
+      .steps-flow{max-width:100%}
+      .sbubble{padding:17px 17px;border-radius:16px}
+      .snc{width:35px;height:35px}
+      .btn-main{font-size:.92rem;padding:16px 22px}
+      #code-in{height:26vh}
     }
   </style>
 </head>
-
 <body>
 
-  <!-- ━━ NAV ━━ -->
-  <nav class="nav">
-    <a class="nav-logo" href="#" onclick="goLanding(event)">
-      CV<span class="dot"></span>Studio
-    </a>
-    <div class="nav-center">
-      <a class="nav-item" href="#step01"
-        onclick="if(!document.getElementById('pg-tool').classList.contains('hidden')){ goLanding(); setTimeout(()=>document.getElementById('step01').scrollIntoView(), 350); }">Cara
-        Pakai</a>
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-logo" href="#" onclick="goLanding(event)">
+    <div class="nlc" style="perspective:180px">
+      <div class="f fr"></div><div class="f bk"></div>
+      <div class="f lt"></div><div class="f rt"></div>
+      <div class="f tp"></div><div class="f bt"></div>
     </div>
-    <div class="nav-right">
-      <button class="nav-cta" id="nav-cta" onclick="goTool()">Buka Tool</button>
-      <button class="nav-back" id="nav-back" onclick="goLanding()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 12H5M5 12l7 7M5 12l7-7" />
-        </svg>
-        Kembali
+    CV Studio
+  </a>
+  <div>
+    <button class="nav-cta" id="nav-cta" onclick="goTool()">Buka Tool</button>
+    <button class="nav-back" id="nav-back" onclick="goLanding()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M5 12l7 7M5 12l7-7"/></svg>
+      Kembali
+    </button>
+  </div>
+</nav>
+
+<!-- LANDING -->
+<div class="page" id="pg-landing">
+  <div class="ob-wrap">
+
+    <!-- 3D Cube -->
+    <div class="cube-scene">
+      <div class="hcube">
+        <div class="hcf hcf-fr"></div><div class="hcf hcf-bk"></div>
+        <div class="hcf hcf-lt"></div><div class="hcf hcf-rt"></div>
+        <div class="hcf hcf-tp"></div><div class="hcf hcf-bt"></div>
+      </div>
+    </div>
+
+    <!-- Title -->
+    <div class="ob-title">
+      <div class="ob-badge"><span class="ob-dot"></span>CV Generator · ATS Friendly</div>
+      <h1 class="ob-h1">Cara Pakai<br>CV Studio</h1>
+      <p class="ob-sub">Ikuti 4 langkah ini untuk membuat CV profesional siap kirim dalam hitungan menit.</p>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps-flow" id="steps-flow">
+
+      <div class="sbw">
+        <div class="sbubble" id="card0">
+          <div class="snc">01</div>
+          <div class="sbody">
+            <div class="st">Salin Prompt CV</div>
+            <div class="sd">Klik tombol <strong>"Salin Prompt"</strong> di bawah. Prompt sudah diformat siap pakai — berisi instruksi membuat CV ATS-friendly format A4.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sarrow"><div class="sarrow-line"></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
+
+      <div class="sbw">
+        <div class="sbubble" id="card1">
+          <div class="snc">02</div>
+          <div class="sbody">
+            <div class="st">Paste ke ChatGPT / AI lain</div>
+            <div class="sd">Buka <strong>ChatGPT, Claude, atau Gemini</strong>. Paste prompt yang sudah disalin, lalu jalankan. Tunggu AI generate kode HTML CV kamu.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sarrow"><div class="sarrow-line"></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
+
+      <div class="sbw">
+        <div class="sbubble" id="card2">
+          <div class="snc">03</div>
+          <div class="sbody">
+            <div class="st">Isi Data Pribadimu</div>
+            <div class="sd">Di chat AI, minta isi nama, kontak, pendidikan, pengalaman kerja, dan prestasi kamu. Sesuaikan sampai hasilnya pas.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sarrow"><div class="sarrow-line"></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
+
+      <div class="sbw">
+        <div class="sbubble cta" id="card3">
+          <div class="snc">04</div>
+          <div class="sbody">
+            <div class="st">Taro Teks HTML nya ke Sini ↓</div>
+            <div class="sd">Copy kode HTML hasil AI. Buka tool di bawah, <strong>paste kode HTML-nya</strong>, klik Preview untuk cek tampilan, lalu <strong>Download PDF</strong>!</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="ob-cta" id="ob-cta">
+      <button class="btn-main" onclick="goTool()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Taro Teks HTML nya ke Sini
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <span class="ob-or">atau salin dulu promptnya</span>
+      <button class="btn-copy" id="copyBtn" onclick="doCopy()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span id="copyLbl">Salin Prompt</span>
       </button>
     </div>
-  </nav>
 
-  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     PAGE 1 — LANDING
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-  <div class="page" id="pg-landing">
-
-    <!-- HERO -->
-    <section class="hero">
-      <div class="cube-wrap">
-        <div class="cube">
-          <div class="cube-face cf-front"></div>
-          <div class="cube-face cf-back"></div>
-          <div class="cube-face cf-left"></div>
-          <div class="cube-face cf-right"></div>
-          <div class="cube-face cf-top"></div>
-          <div class="cube-face cf-bottom"></div>
-        </div>
-      </div>
-
-      <div class="hero-chip">The professional CV generator</div>
-
-      <h1 class="hero-h1">
-        Build CV you own.
-      </h1>
-
-      <p class="hero-sub">
-        CV Studio membantu kamu membuat CV profesional ATS friendly salin prompt, generate di AI, lalu ekspor jadi PDF
-        dalam hitungan menit.
-      </p>
-
-      <div class="hero-btns">
-        <button class="btn-hero-primary" onclick="goTool()">
-          Buka PDF Exporter
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </button>
-        <button class="btn-hero-ghost" id="heroCopyBtn" onclick="doHeroCopy()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg>
-          <span id="heroCopyLbl">Salin Prompt</span>
-        </button>
-      </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="features-section">
-      <div class="feat-grid">
-        <div class="feat-col reveal reveal-d1">
-          <div class="feat-ico">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="7" height="7" rx="1" />
-              <rect x="14" y="3" width="7" height="7" rx="1" />
-              <rect x="3" y="14" width="7" height="7" rx="1" />
-              <rect x="14" y="14" width="7" height="7" rx="1" />
-            </svg>
-          </div>
-          <div class="feat-t">ATS-Friendly</div>
-          <div class="feat-s">Struktur bersih dan mudah terbaca oleh sistem rekrutmen otomatis. Dibuat sesuai standar
-            industri global.</div>
-          <div class="feat-divider"></div>
-        </div>
-        <div class="feat-col reveal reveal-d2">
-          <div class="feat-ico">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <path d="M12 18v-6M9 15l3 3 3-3" />
-            </svg>
-          </div>
-          <div class="feat-t">Format A4 Siap Cetak</div>
-          <div class="feat-s">Layout dioptimalkan untuk kertas A4 dengan margin yang tepat. Ekspor langsung ke PDF
-            dengan satu klik.</div>
-          <div class="feat-divider"></div>
-        </div>
-        <div class="feat-col reveal reveal-d3">
-          <div class="feat-ico">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
-          </div>
-          <div class="feat-t">Paste & Export</div>
-          <div class="feat-s">Paste kode dari AI, preview instan, download semua dari satu tab browser tanpa perlu
-            install apapun.</div>
-          <div class="feat-divider"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROMPT SECTION -->
-    <section class="prompt-section" id="step01">
-      <div class="sect-label reveal">Step 01</div>
-      <div class="sect-h2 reveal reveal-d1">
-        Full stack CV<br><em>generation.</em>
-      </div>
-
-      <div class="prompt-layout">
-        <div class="prompt-left reveal reveal-d2">
-          <p class="prompt-desc">
-            Salin prompt di bawah, tempel ke AI favorit kamu (Claude, ChatGPT, Gemini), lalu isi data pribadimu.
-            Dapatkan kode HTML CV yang siap dipakai dalam detik.
-          </p>
-
-          <div class="steps-list">
-            <div class="step-item">
-              <div class="step-num">01</div>
-              <div class="step-content">
-                <div class="step-t">Salin prompt</div>
-                <div class="step-s">Klik tombol salin di bawah, prompt sudah terformat siap pakai.</div>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="step-num">02</div>
-              <div class="step-content">
-                <div class="step-t">Generate di AI</div>
-                <div class="step-s">Paste ke Claude / ChatGPT / Gemini, isi data pribadimu, jalankan.</div>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="step-num">03</div>
-              <div class="step-content">
-                <div class="step-t">Paste & Export PDF</div>
-                <div class="step-s">Buka PDF Exporter, paste kode HTML, preview, download jadi PDF.</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="cta-row" style="margin-top:32px">
-            <button class="btn-primary" onclick="goTool()">
-              Buka PDF Exporter
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </button>
-            <button class="btn-ghost" id="sectCopyBtn" onclick="doSectCopy()">
-              <span id="sectCopyLbl">Salin Prompt</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="reveal reveal-d3">
-          <div class="p-card">
-            <div class="p-topbar">
-              <div class="p-dots">
-                <div class="pdot pd-r"></div>
-                <div class="pdot pd-y"></div>
-                <div class="pdot pd-g"></div>
-              </div>
-              <div class="p-fname">cv-prompt.txt</div>
-              <button class="btn-copy-sm" id="copySmBtn" onclick="doSmCopy()">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="9" y="9" width="13" height="13" rx="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-                <span id="copySmLbl">Copy</span>
-              </button>
-            </div>
-            <div class="p-body">
-              <pre class="p-text"><span class="pb">Buatkan file HTML lengkap untuk CV profesional ATS-friendly format kertas A4.</span>
-<span class="pk">Data:</span>
-
-<span class="pv">* Nama:</span> [nama lengkap kamu]
-<span class="pv">* Kontak:</span> [kota], [email], [LinkedIn URL]
-
-<span class="pk">Ketentuan desain:</span>
-
-<span class="pv">* Font:</span> Times New Roman
-<span class="pv">* Warna:</span> hitam putih saja
-<span class="pv">* Padding kertas:</span> 20mm semua sisi
-<span class="pv">* Layout setiap pengalaman:</span> baris atas bold (nama institusi | kota), baris bawah italic (posisi | tanggal), lalu bullet points
-<span class="pv">* Setiap section title pakai</span> border-bottom hitam dan huruf kapital
-<span class="pv">* Ada @media print:</span> margin 15mm 20mm, hilangkan shadow dan elemen no-print
-
-<span class="pk">Section yang dibutuhkan (urutan ini):</span>
-
-<span class="pn">1.</span> Summary — 3-4 kalimat tentang background dan passion
-<span class="pn">2.</span> Education — [isi data pendidikan]
-<span class="pn">3.</span> Internship &amp; Work Experience — [isi pengalaman kerja]
-<span class="pn">4.</span> Organizational Experience — [isi organisasi]
-<span class="pn">5.</span> Achievements &amp; Awards — [isi prestasi]
-<span class="pn">6.</span> Certifications &amp; Training — [isi sertifikasi]</pre>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer style="border-top:1px solid var(--border)">
-      <div class="foot reveal">
-        <div class="foot-logo">
-          CV<span class="dot"></span>Studio
-        </div>
-        <div class="foot-info">
-          <div style="color:var(--muted);font-size:0.8rem;font-weight:500">Gabriel Hamonangan</div>
-          <div>Informatics · President University · Cikarang</div>
-        </div>
-      </div>
-    </footer>
-
+    <div class="ob-foot">Gabriel Hamonangan · Informatics · President University</div>
   </div>
+</div>
 
-  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     PAGE 2 — TOOL
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-  <div class="page hidden" id="pg-tool">
-    <div class="tool-wrap">
-
-      <!-- LEFT -->
-      <div class="t-left">
-        <div class="t-left-head">
-          <span class="t-section-lbl">Step 02</span>
-          <div class="t-left-title">Paste kode HTML CV kamu</div>
+<!-- TOOL PAGE -->
+<div class="page hidden" id="pg-tool">
+  <div class="tool-wrap">
+    <div class="t-left">
+      <div class="t-lh">
+        <span class="t-sl">Step 04</span>
+        <div class="t-lt">Taro Teks HTML nya ke Sini ↓</div>
+      </div>
+      <div class="t-ea">
+        <div class="t-eb">
+          <div class="t-dots"><div class="tdot td-r"></div><div class="tdot td-y"></div><div class="tdot td-g"></div></div>
+          <span class="t-lang">HTML · CV Output dari AI</span>
         </div>
-        <div class="t-editor-area">
-          <div class="t-editor-bar">
-            <div class="t-dots">
-              <div class="tdot td-r"></div>
-              <div class="tdot td-y"></div>
-              <div class="tdot td-g"></div>
-            </div>
-            <span class="t-lang">HTML · CV Output</span>
-          </div>
-          <textarea id="code-in" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"
-            placeholder="<!DOCTYPE html>&#10;<html>&#10;  ...paste kode HTML CV dari AI di sini...&#10;</html>"></textarea>
-          <div class="t-char"><span id="t-chars">0</span> chars</div>
+        <div class="ph" id="ph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          <span>Paste kode HTML dari AI — <strong>Ctrl+V</strong> atau long-press → Paste</span>
         </div>
-        <div class="t-left-foot">
-          <div class="t-btn-row">
-            <button class="tbtn tbtn-prev" id="btn-prev" disabled onclick="doPreview()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-              Preview
-            </button>
-            <button class="tbtn tbtn-dl" id="btn-dl" disabled onclick="doDL()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              <span id="dl-lbl">Download PDF</span>
-            </button>
-            <button class="tbtn-clr" id="btn-clr" disabled title="Hapus" onclick="doClear()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6l-1 14H6L5 6" />
-                <path d="M10 11v6M14 11v6" />
-              </svg>
-            </button>
-          </div>
-          <div class="t-prog" id="t-prog">
-            <div class="t-prog-lbl" id="t-prog-lbl">Memproses…</div>
-            <div class="t-prog-bg">
-              <div class="t-prog-bar" id="t-prog-bar"></div>
-            </div>
-          </div>
+        <textarea id="code-in" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"
+          placeholder="<!DOCTYPE html>&#10;<html>&#10;  ...paste kode HTML CV dari AI di sini...&#10;</html>"></textarea>
+        <div class="t-ch"><span id="t-chars">0</span> chars</div>
+      </div>
+      <div class="t-lf">
+        <div class="t-br">
+          <button class="btn-prev" id="btn-prev" disabled onclick="doPreview()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Preview
+          </button>
+          <button class="btn-dl" id="btn-dl" disabled onclick="doDL()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span id="dl-lbl">Download PDF</span>
+          </button>
+          <button class="btn-clr" id="btn-clr" disabled onclick="doClear()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+          </button>
+        </div>
+        <div class="t-al">
+          <div class="t-lbl">preview dulu</div>
+          <div class="t-lbl">download PDF</div>
+          <div class="t-lbl-s">hapus</div>
+        </div>
+        <div class="t-prog" id="t-prog">
+          <div class="t-pl" id="t-pl">Memproses…</div>
+          <div class="t-pb"><div class="t-pbar" id="t-pbar"></div></div>
         </div>
       </div>
+    </div>
 
-      <!-- RIGHT -->
-      <div class="t-right">
-        <div class="t-preview-bar">
-          <div class="tpb-dots">
-            <div class="tpdot tpd-r"></div>
-            <div class="tpdot tpd-y"></div>
-            <div class="tpdot tpd-g"></div>
-          </div>
-          <div class="tpb-addr" id="tpb-addr">cv-preview://paste-html-above</div>
-          <div class="tpb-tag">A4 · 210×297mm</div>
+    <div class="t-right">
+      <div class="t-pvbar">
+        <div class="tpbd"><div class="tpdot tpd-r"></div><div class="tpdot tpd-y"></div><div class="tpdot tpd-g"></div></div>
+        <div class="tpb-addr" id="tpb-addr">cv-preview://paste-html-above</div>
+        <div class="tpb-tag">A4 · 210×297mm</div>
+      </div>
+      <div class="t-stage">
+        <div class="t-empty" id="t-empty">
+          <div class="t-eico">📋</div>
+          <div class="t-et">Belum ada preview</div>
+          <div class="t-es">Paste kode HTML CV di panel kiri, lalu tekan Preview.</div>
         </div>
-        <div class="t-stage">
-          <div class="t-empty" id="t-empty">
-            <div class="t-empty-ico">📋</div>
-            <div class="t-empty-t">Belum ada preview</div>
-            <div class="t-empty-s">Paste kode HTML CV di panel kiri, lalu tekan Preview.</div>
-          </div>
-          <div class="t-frame-wrap" id="t-frame-wrap">
-            <iframe id="pframe" sandbox="allow-same-origin allow-scripts" title="CV Preview"></iframe>
-          </div>
+        <div class="t-fw" id="t-fw">
+          <iframe id="pframe" sandbox="allow-same-origin allow-scripts" title="CV Preview"></iframe>
         </div>
       </div>
-
     </div>
   </div>
+</div>
 
-  <div id="rhost"></div>
-
-  <div class="toast" id="toast">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-    <span id="toast-msg">Tersalin!</span>
+<!-- Mobile Sheet -->
+<div class="dl-sheet" id="dl-sheet">
+  <div class="dsh"></div>
+  <div class="dst">Sudah paste HTML? →</div>
+  <div class="dsb">
+    <button class="ds-prev" id="sheet-prev" disabled onclick="doPreview()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      Preview
+    </button>
+    <button class="ds-dl" id="sheet-dl" disabled onclick="doDL()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span id="sheet-dl-lbl">Download PDF →</span>
+    </button>
   </div>
+</div>
 
-  <button class="fab-dl" id="fab-dl" title="Ke Tombol Download"
-    onclick="document.getElementById('btn-dl').scrollIntoView({behavior: 'smooth', block: 'center'})">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-      <polyline points="7 10 12 15 17 10" />
-      <line x1="12" y1="15" x2="12" y2="3" />
-    </svg>
-  </button>
+<div id="rhost"></div>
+<div class="toast" id="toast">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Tersalin!</span>
+</div>
 
-  <script>
-    const { jsPDF } = window.jspdf;
+<script>
+const {jsPDF}=window.jspdf;
 
-    /* ━━ SCROLL REVEAL ━━ */
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+/* ━━ BG: Elegant moving lines ━━ */
+(()=>{
+  const cv=document.getElementById('bg-canvas');
+  const cx=cv.getContext('2d');
+  let W,H,mouse={x:.5,y:.5};
+  const resize=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};
+  resize();addEventListener('resize',resize);
+  addEventListener('mousemove',e=>{mouse.x=e.clientX/W;mouse.y=e.clientY/H});
 
-    function initReveal() {
-      document.querySelectorAll('.reveal').forEach(el => {
-        revealObserver.observe(el);
-      });
+  const lines=[];
+
+  class VLine{
+    reset(init){
+      this.x=Math.random()*W;
+      this.y=init?Math.random()*H:-20;
+      this.vx=(Math.random()-.5)*.25;
+      this.vy=.15+Math.random()*.2;
+      this.len=50+Math.random()*130;
+      this.w=.2+Math.random()*.6;
+      this.a=0;this.ma=.03+Math.random()*.06;
+      this.life=0;this.ml=200+Math.random()*280;
     }
-    document.addEventListener('DOMContentLoaded', initReveal);
-    setTimeout(initReveal, 100);
-
-    /* ━━ ROUTING ━━ */
-    const pgLanding = document.getElementById('pg-landing');
-    const pgTool = document.getElementById('pg-tool');
-    const navBack = document.getElementById('nav-back');
-
-    function goTool() {
-      pgLanding.classList.add('slide-out');
-      setTimeout(() => {
-        pgLanding.classList.add('hidden');
-        pgLanding.classList.remove('slide-out');
-        pgTool.classList.remove('hidden', 'slide-in');
-        navBack.style.display = 'flex';
-        const navCta = document.getElementById('nav-cta');
-        if (navCta) navCta.style.display = 'none';
-        const fabDl = document.getElementById('fab-dl');
-        if (fabDl) fabDl.classList.add('show');
-        scaleFrame();
-      }, 300);
+    constructor(){this.reset(true)}
+    step(){
+      this.x+=this.vx+(mouse.x-.5)*.06;
+      this.y+=this.vy;this.life++;
+      const p=this.life/this.ml;
+      this.a=p<.12?(p/.12)*this.ma:p>.78?((1-p)/.22)*this.ma:this.ma;
+      if(this.y>H+40||this.life>this.ml)this.reset(false);
     }
-    function goLanding(e) {
-      if (e) e.preventDefault();
-      pgTool.classList.add('slide-in');
-      setTimeout(() => {
-        pgTool.classList.add('hidden');
-        pgTool.classList.remove('slide-in');
-        pgLanding.classList.remove('hidden', 'slide-out');
-        navBack.style.display = 'none';
-        const navCta = document.getElementById('nav-cta');
-        if (navCta) navCta.style.display = '';
-        const fabDl = document.getElementById('fab-dl');
-        if (fabDl) fabDl.classList.remove('show');
-      }, 300);
+    draw(){
+      cx.save();cx.globalAlpha=this.a;cx.strokeStyle='#fff';
+      cx.lineWidth=this.w;cx.shadowColor='#fff';cx.shadowBlur=7;
+      cx.beginPath();cx.moveTo(this.x,this.y);
+      cx.lineTo(this.x+this.vx*this.len*2.5,this.y+this.vy*this.len);
+      cx.stroke();cx.restore();
     }
+  }
 
-    /* ━━ PROMPT ━━ */
-    const PROMPT = `Buatkan file HTML lengkap untuk CV profesional ATS-friendly format kertas A4.
+  class HLine{
+    reset(init){
+      this.x=init?Math.random()*W:-120;
+      this.y=init?Math.random()*H:Math.random()*H*.7;
+      this.vx=.2+Math.random()*.3;
+      this.vy=(Math.random()-.5)*.08;
+      this.len=90+Math.random()*200;
+      this.w=.15+Math.random()*.45;
+      this.a=0;this.ma=.015+Math.random()*.03;
+      this.life=0;this.ml=250+Math.random()*350;
+    }
+    constructor(){this.reset(true)}
+    step(){
+      this.x+=this.vx;this.y+=this.vy;this.life++;
+      const p=this.life/this.ml;
+      this.a=p<.08?(p/.08)*this.ma:p>.82?((1-p)/.18)*this.ma:this.ma;
+      if(this.x>W+150||this.life>this.ml)this.reset(false);
+    }
+    draw(){
+      cx.save();cx.globalAlpha=this.a;cx.strokeStyle='#fff';
+      cx.lineWidth=this.w;cx.shadowColor='#fff';cx.shadowBlur=5;
+      cx.beginPath();cx.moveTo(this.x,this.y);
+      cx.lineTo(this.x+this.len,this.y+this.vy*this.len*3);
+      cx.stroke();cx.restore();
+    }
+  }
+
+  for(let i=0;i<30;i++)lines.push(new VLine());
+  for(let i=0;i<16;i++)lines.push(new HLine());
+
+  const loop=()=>{
+    cx.clearRect(0,0,W,H);
+    lines.forEach(l=>{l.step();l.draw()});
+    requestAnimationFrame(loop);
+  };
+  loop();
+})();
+
+/* ━━ SCROLL BLUR REVEAL ━━ */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const el=e.target,d=+(el.dataset.d||0);
+      setTimeout(()=>el.classList.add('vis'),d);
+      obs.unobserve(el);
+    }
+  });
+},{threshold:.1,rootMargin:'0px 0px -10px 0px'});
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.sbw').forEach((el,i)=>{el.dataset.d=i*130;obs.observe(el)});
+  const cta=document.getElementById('ob-cta');if(cta){cta.dataset.d=520;obs.observe(cta);}
+
+  /* 3D tilt */
+  document.querySelectorAll('.sbubble').forEach(el=>{
+    el.addEventListener('mousemove',e=>{
+      const r=el.getBoundingClientRect();
+      const dx=(e.clientX-r.left-r.width/2)/(r.width/2);
+      const dy=(e.clientY-r.top-r.height/2)/(r.height/2);
+      el.style.transform=`perspective(900px) rotateY(${dx*5}deg) rotateX(${-dy*3.5}deg) translateZ(5px)`;
+    });
+    el.addEventListener('mouseleave',()=>{el.style.transform='perspective(900px) rotateX(0) rotateY(0) translateZ(0)'});
+  });
+});
+
+/* ━━ ROUTING ━━ */
+const pgL=document.getElementById('pg-landing'),pgT=document.getElementById('pg-tool');
+const navBack=document.getElementById('nav-back'),navCta=document.getElementById('nav-cta');
+const dlSheet=document.getElementById('dl-sheet');
+
+function goTool(){
+  pgL.classList.add('slide-out');
+  setTimeout(()=>{
+    pgL.classList.add('hidden');pgL.classList.remove('slide-out');
+    pgT.classList.remove('hidden','slide-in');
+    navBack.style.display='flex';navCta.style.display='none';
+    if(innerWidth<=768) dlSheet.classList.add('show');
+    scaleFrame();
+  },300);
+}
+function goLanding(e){
+  if(e)e.preventDefault();
+  pgT.classList.add('slide-in');
+  setTimeout(()=>{
+    pgT.classList.add('hidden');pgT.classList.remove('slide-in');
+    pgL.classList.remove('hidden','slide-out');
+    navBack.style.display='none';navCta.style.display='';
+    dlSheet.classList.remove('show');
+  },300);
+}
+
+/* ━━ PROMPT ━━ */
+const PROMPT=`Buatkan file HTML lengkap untuk CV profesional ATS-friendly format kertas A4.
 Data:
 
 * Nama: [nama lengkap kamu]
@@ -1797,171 +718,122 @@ Section yang dibutuhkan (urutan ini):
 5. Achievements & Awards — [isi prestasi]
 6. Certifications & Training — [isi sertifikasi]`;
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      document.getElementById('toast-msg').textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2600);
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2700);
+}
+function doCopy(){
+  navigator.clipboard.writeText(PROMPT).then(()=>{
+    const b=document.getElementById('copyBtn'),l=document.getElementById('copyLbl');
+    b.classList.add('ok');l.textContent='✓ Tersalin!';
+    showToast('Prompt tersalin! Paste ke ChatGPT atau AI lainnya.');
+    setTimeout(()=>{b.classList.remove('ok');l.textContent='Salin Prompt'},2500);
+  });
+}
+
+/* ━━ TOOL ━━ */
+const codeIn=document.getElementById('code-in');
+const tChars=document.getElementById('t-chars');
+const btnPrev=document.getElementById('btn-prev');
+const btnDl=document.getElementById('btn-dl');
+const btnClr=document.getElementById('btn-clr');
+const dlLbl=document.getElementById('dl-lbl');
+const pframe=document.getElementById('pframe');
+const fWrap=document.getElementById('t-fw');
+const tEmpty=document.getElementById('t-empty');
+const tpbAddr=document.getElementById('tpb-addr');
+const tProg=document.getElementById('t-prog');
+const tProgB=document.getElementById('t-pbar');
+const tProgL=document.getElementById('t-pl');
+const rhost=document.getElementById('rhost');
+const ph=document.getElementById('ph');
+const sheetPrev=document.getElementById('sheet-prev');
+const sheetDl=document.getElementById('sheet-dl');
+const sheetDlLbl=document.getElementById('sheet-dl-lbl');
+let hasPrev=false;
+
+function syncBtns(has){
+  [btnPrev,btnDl,btnClr,sheetPrev,sheetDl].forEach(b=>b.disabled=!has);
+  if(ph) ph.style.display=has?'none':'';
+}
+
+codeIn.addEventListener('input',()=>{
+  const l=codeIn.value.length;tChars.textContent=l.toLocaleString('id');syncBtns(l>10);
+});
+codeIn.addEventListener('keydown',e=>{
+  if(e.key==='Tab'){e.preventDefault();const s=codeIn.selectionStart,v=codeIn.value;codeIn.value=v.slice(0,s)+'  '+v.slice(codeIn.selectionEnd);codeIn.selectionStart=codeIn.selectionEnd=s+2;}
+});
+
+function doPreview(){
+  const html=codeIn.value.trim();if(!html)return;
+  pframe.srcdoc=html;
+  pframe.onload=()=>{try{const h=pframe.contentDocument.documentElement.scrollHeight;if(h>400)pframe.style.height=h+'px';scaleFrame();}catch(_){}};
+  fWrap.classList.add('show');tEmpty.style.display='none';
+  tpbAddr.textContent='cv-preview://live — '+new Date().toLocaleTimeString('id');
+  hasPrev=true;
+  if(innerWidth<=768)setTimeout(()=>document.querySelector('.t-right').scrollIntoView({behavior:'smooth',block:'start'}),200);
+}
+function scaleFrame(){
+  const ww=fWrap.offsetWidth;
+  if(ww&&ww<794){const s=ww/794;pframe.style.transform=`scale(${s})`;const h=parseInt(pframe.style.height)||1123;fWrap.style.height=(h*s)+'px';}
+  else{pframe.style.transform='';fWrap.style.height='';}
+}
+addEventListener('resize',scaleFrame);
+
+async function doDL(){
+  const html=codeIn.value.trim();if(!html)return;
+  if(!hasPrev)doPreview();
+  const all=[btnDl,btnPrev,sheetDl,sheetPrev];
+  all.forEach(b=>b.disabled=true);
+  dlLbl.textContent='Memproses…';sheetDlLbl.textContent='Memproses…';
+  showProg(5,'Menyiapkan konten…');
+  try{
+    rhost.innerHTML='';
+    const d=new DOMParser().parseFromString(html,'text/html');
+    const styles=Array.from(d.querySelectorAll('style')).map(s=>s.textContent).join('\n');
+    const cvEl=d.getElementById('cv-container')||d.body;
+    const se=document.createElement('style');
+    se.textContent=`#rhost *,#rhost *::before,#rhost *::after{box-sizing:border-box}#rhost .no-print{display:none!important}${styles}#rhost #cv-container{margin:0!important;box-shadow:none!important;max-width:100%!important;width:100%!important;padding:15mm 20mm!important;}`;
+    rhost.appendChild(se);rhost.insertAdjacentHTML('beforeend',cvEl.outerHTML);
+    showProg(25,'Render…');await tick(120);
+    const target=rhost.querySelector('#cv-container')||rhost.children[1];
+    showProg(42,'Screenshot…');
+    const canvas=await html2canvas(target,{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#fff',logging:false,width:794,windowWidth:794});
+    showProg(75,'Buat PDF…');
+    const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const A4W=210,A4H=297,pH=Math.floor((A4H/A4W)*canvas.width);
+    let yOff=0,pg=0;
+    while(yOff<canvas.height){
+      if(pg>0)pdf.addPage();
+      const sH=Math.min(pH,canvas.height-yOff);
+      const pc=document.createElement('canvas');pc.width=canvas.width;pc.height=pH;
+      const cx2=pc.getContext('2d');cx2.fillStyle='#fff';cx2.fillRect(0,0,pc.width,pc.height);
+      cx2.drawImage(canvas,0,yOff,canvas.width,sH,0,0,canvas.width,sH);
+      pdf.addImage(pc.toDataURL('image/png'),'PNG',0,0,A4W,A4H);
+      yOff+=pH;pg++;
     }
-
-    function copyPrompt(btnId, lblId, newLbl, resetLbl) {
-      navigator.clipboard.writeText(PROMPT).then(() => {
-        const btn = document.getElementById(btnId);
-        const lbl = document.getElementById(lblId);
-        if (btn) btn.classList.add('ok');
-        if (lbl) lbl.textContent = newLbl;
-        showToast('Prompt tersalin ke clipboard!');
-        setTimeout(() => {
-          if (btn) btn.classList.remove('ok');
-          if (lbl) lbl.textContent = resetLbl;
-        }, 2400);
-      });
-    }
-    function doSmCopy() { copyPrompt('copySmBtn', 'copySmLbl', '✓ Copied', 'Copy') }
-    function doHeroCopy() { copyPrompt('heroCopyBtn', 'heroCopyLbl', '✓ Tersalin!', 'Salin Prompt') }
-    function doSectCopy() { copyPrompt('sectCopyBtn', 'sectCopyLbl', '✓ Tersalin!', 'Salin Prompt') }
-
-    /* ━━ TOOL LOGIC ━━ */
-    const codeIn = document.getElementById('code-in');
-    const tChars = document.getElementById('t-chars');
-    const btnPrev = document.getElementById('btn-prev');
-    const btnDl = document.getElementById('btn-dl');
-    const btnClr = document.getElementById('btn-clr');
-    const dlLbl = document.getElementById('dl-lbl');
-    const pframe = document.getElementById('pframe');
-    const fWrap = document.getElementById('t-frame-wrap');
-    const tEmpty = document.getElementById('t-empty');
-    const tpbAddr = document.getElementById('tpb-addr');
-    const tProg = document.getElementById('t-prog');
-    const tProgB = document.getElementById('t-prog-bar');
-    const tProgL = document.getElementById('t-prog-lbl');
-    const rhost = document.getElementById('rhost');
-    let hasPrev = false;
-
-    codeIn.addEventListener('input', () => {
-      const l = codeIn.value.length;
-      tChars.textContent = l.toLocaleString('id');
-      const has = l > 10;
-      btnPrev.disabled = !has;
-      btnDl.disabled = !has;
-      btnClr.disabled = !has;
-    });
-
-    codeIn.addEventListener('keydown', e => {
-      if (e.key === 'Tab') {
-        e.preventDefault();
-        const s = codeIn.selectionStart;
-        const v = codeIn.value;
-        codeIn.value = v.slice(0, s) + '  ' + v.slice(codeIn.selectionEnd);
-        codeIn.selectionStart = codeIn.selectionEnd = s + 2;
-      }
-    });
-
-    function doPreview() {
-      const html = codeIn.value.trim();
-      if (!html) return;
-      pframe.srcdoc = html;
-      pframe.onload = () => {
-        try {
-          const h = pframe.contentDocument.documentElement.scrollHeight;
-          if (h > 400) pframe.style.height = h + 'px';
-          scaleFrame();
-        } catch (_) { }
-      };
-      fWrap.classList.add('show');
-      tEmpty.style.display = 'none';
-      tpbAddr.textContent = 'cv-preview://live — ' + new Date().toLocaleTimeString('id');
-      hasPrev = true;
-    }
-
-    function scaleFrame() {
-      const ww = fWrap.offsetWidth;
-      if (ww && ww < 794) {
-        const s = ww / 794;
-        pframe.style.transform = `scale(${s})`;
-        const h = parseInt(pframe.style.height) || 1123;
-        fWrap.style.height = (h * s) + 'px';
-      } else {
-        pframe.style.transform = '';
-        fWrap.style.height = '';
-      }
-    }
-    window.addEventListener('resize', scaleFrame);
-
-    async function doDL() {
-      const html = codeIn.value.trim();
-      if (!html) return;
-      if (!hasPrev) doPreview();
-      btnDl.disabled = true; btnPrev.disabled = true;
-      dlLbl.textContent = 'Memproses…';
-      showProg(5, 'Menyiapkan konten…');
-      try {
-        rhost.innerHTML = '';
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const styles = Array.from(doc.querySelectorAll('style')).map(s => s.textContent).join('\n');
-        const cvEl = doc.getElementById('cv-container') || doc.body;
-        const styleEl = document.createElement('style');
-        styleEl.textContent = `
-      #rhost *,#rhost *::before,#rhost *::after{box-sizing:border-box}
-      #rhost .no-print{display:none!important}
-      ${styles}
-      #rhost #cv-container{margin:0!important;box-shadow:none!important;max-width:100%!important;width:100%!important;padding:15mm 20mm!important;}
-    `;
-        rhost.appendChild(styleEl);
-        rhost.insertAdjacentHTML('beforeend', cvEl.outerHTML);
-        showProg(25, 'Render konten…');
-        await tick(120);
-        const target = rhost.querySelector('#cv-container') || rhost.children[1];
-        showProg(42, 'Screenshot…');
-        const canvas = await html2canvas(target, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#ffffff', logging: false, width: 794, windowWidth: 794 });
-        showProg(75, 'Buat PDF…');
-        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        const A4W = 210, A4H = 297;
-        const pH = Math.floor((A4H / A4W) * canvas.width);
-        let yOff = 0, page = 0;
-        while (yOff < canvas.height) {
-          if (page > 0) pdf.addPage();
-          const sH = Math.min(pH, canvas.height - yOff);
-          const pc = document.createElement('canvas');
-          pc.width = canvas.width; pc.height = pH;
-          const ctx = pc.getContext('2d');
-          ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, pc.width, pc.height);
-          ctx.drawImage(canvas, 0, yOff, canvas.width, sH, 0, 0, canvas.width, sH);
-          pdf.addImage(pc.toDataURL('image/png'), 'PNG', 0, 0, A4W, A4H);
-          yOff += pH; page++;
-        }
-        showProg(96, 'Menyimpan…');
-        await tick(80);
-        pdf.save('CV.pdf');
-        showProg(100, '✓ PDF berhasil didownload!');
-        showToast('PDF berhasil didownload!');
-        setTimeout(() => {
-          hideProg(); btnDl.disabled = false; btnPrev.disabled = false;
-          dlLbl.textContent = 'Download PDF';
-        }, 2200);
-      } catch (err) {
-        console.error(err);
-        hideProg(); btnDl.disabled = false; btnPrev.disabled = false;
-        dlLbl.textContent = 'Download PDF';
-        alert('Gagal: ' + err.message);
-      } finally { rhost.innerHTML = ''; }
-    }
-
-    function doClear() {
-      codeIn.value = ''; tChars.textContent = '0';
-      btnPrev.disabled = true; btnDl.disabled = true; btnClr.disabled = true;
-      fWrap.classList.remove('show'); tEmpty.style.display = '';
-      tpbAddr.textContent = 'cv-preview://paste-html-above';
-      pframe.srcdoc = ''; pframe.style.height = '1123px'; pframe.style.transform = '';
-      fWrap.style.height = ''; hasPrev = false; hideProg();
-      dlLbl.textContent = 'Download PDF';
-    }
-
-    function tick(ms) { return new Promise(r => setTimeout(r, ms)) }
-    function showProg(p, msg) { tProg.classList.add('show'); tProgB.style.width = p + '%'; tProgL.textContent = msg }
-    function hideProg() { tProg.classList.remove('show'); tProgB.style.width = '0%' }
-  </script>
+    showProg(96,'Menyimpan…');await tick(80);
+    pdf.save('CV.pdf');showProg(100,'✓ Selesai!');showToast('PDF berhasil didownload! 🎉');
+    setTimeout(()=>{hideProg();all.forEach(b=>b.disabled=false);dlLbl.textContent='Download PDF';sheetDlLbl.textContent='Download PDF →';},2200);
+  }catch(err){
+    console.error(err);hideProg();all.forEach(b=>b.disabled=false);
+    dlLbl.textContent='Download PDF';sheetDlLbl.textContent='Download PDF →';
+    alert('Gagal: '+err.message);
+  }finally{rhost.innerHTML='';}
+}
+function doClear(){
+  codeIn.value='';tChars.textContent='0';syncBtns(false);
+  fWrap.classList.remove('show');tEmpty.style.display='';
+  tpbAddr.textContent='cv-preview://paste-html-above';
+  pframe.srcdoc='';pframe.style.height='1123px';pframe.style.transform='';
+  fWrap.style.height='';hasPrev=false;hideProg();
+  dlLbl.textContent='Download PDF';sheetDlLbl.textContent='Download PDF →';
+  if(ph)ph.style.display='';
+}
+const tick=ms=>new Promise(r=>setTimeout(r,ms));
+function showProg(p,msg){tProg.classList.add('show');tProgB.style.width=p+'%';tProgL.textContent=msg}
+function hideProg(){tProg.classList.remove('show');tProgB.style.width='0%'}
+</script>
 </body>
-
 </html>
