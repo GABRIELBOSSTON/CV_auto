@@ -3,37 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>3D Flight Visualizer - Global Air Traffic</title>
+    <title>3D Character: Man with White Laptop</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            font-family: 'Segoe UI', 'Poppins', 'Montserrat', sans-serif;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
         }
         #info {
             position: absolute;
             bottom: 20px;
             left: 20px;
-            color: white;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.65);
             backdrop-filter: blur(8px);
-            padding: 10px 18px;
-            border-radius: 30px;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 40px;
             font-size: 14px;
+            font-weight: 500;
             pointer-events: none;
             z-index: 10;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            border-left: 4px solid #00aaff;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            letter-spacing: 0.3px;
+            border-left: 4px solid #ffffff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         #controls-hint {
             position: absolute;
             bottom: 20px;
             right: 20px;
-            color: rgba(255,255,255,0.7);
             background: rgba(0,0,0,0.5);
             backdrop-filter: blur(5px);
+            color: rgba(255,255,255,0.8);
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 12px;
@@ -49,13 +49,12 @@
 </head>
 <body>
     <div id="info">
-        ✈️ LIVE FLIGHT TRACKING | Great-circle routes | Smooth interpolation
+        👨‍💻 3D Character | Man holding a <span style="color:#ffffff; font-weight:bold;">White Laptop</span>
     </div>
     <div id="controls-hint">
         🖱️ Drag to rotate | Scroll to zoom
     </div>
 
-    <!-- Import Three.js core and add-ons via CDN -->
     <script type="importmap">
         {
             "imports": {
@@ -68,451 +67,365 @@
     <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
-        // --- Setup Scene, Camera, Renderer ---
+        // --- Setup Scene, Camera, Renderers ---
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x010118); // deep space color
-        scene.fog = new THREE.FogExp2(0x010118, 0.0003); // subtle fog for depth
+        scene.background = new THREE.Color(0x111122); // Deep subtle blue-gray
+        scene.fog = new THREE.FogExp2(0x111122, 0.008); // Slight fog for depth
 
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000);
-        camera.position.set(0, 2, 15);
-        camera.lookAt(0, 0, 0);
+        // Perspective Camera
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(3, 1.5, 4);
+        camera.lookAt(0, 1, 0);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        // WebGL Renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true; // Enable shadows for better realism
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.shadowMap.enabled = true; // enable shadows for better depth (aircraft shadows optional)
         document.body.appendChild(renderer.domElement);
 
-        // --- Controls: rotatable Earth with smooth interaction ---
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;          // smooth inertia
-        controls.dampingFactor = 0.05;
-        controls.rotateSpeed = 1.0;
-        controls.zoomSpeed = 1.2;
-        controls.enableZoom = true;
-        controls.enablePan = false;
-        controls.autoRotate = false;
-        controls.target.set(0, 0, 0);
-        
-        // --- Starfield Background: particle system (distant stars) ---
-        const starGeometry = new THREE.BufferGeometry();
-        const starCount = 3500;
-        const starPositions = new Float32Array(starCount * 3);
-        for (let i = 0; i < starCount; i++) {
-            // random points within a large sphere radius 800-1200 for depth variation
-            const radius = 600 + Math.random() * 400;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.acos(2 * Math.random() - 1);
-            starPositions[i*3] = radius * Math.sin(phi) * Math.cos(theta);
-            starPositions[i*3+1] = radius * Math.sin(phi) * Math.sin(theta);
-            starPositions[i*3+2] = radius * Math.cos(phi);
-        }
-        starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-        const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.35, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending });
-        const stars = new THREE.Points(starGeometry, starMaterial);
-        scene.add(stars);
-        
-        // Optional: a second layer of tiny stars
-        const starGeometry2 = new THREE.BufferGeometry();
-        const starCount2 = 2000;
-        const starPositions2 = new Float32Array(starCount2 * 3);
-        for (let i = 0; i < starCount2; i++) {
-            starPositions2[i*3] = (Math.random() - 0.5) * 2000;
-            starPositions2[i*3+1] = (Math.random() - 0.5) * 1200;
-            starPositions2[i*3+2] = (Math.random() - 0.5) * 1500 - 500;
-        }
-        starGeometry2.setAttribute('position', new THREE.BufferAttribute(starPositions2, 3));
-        const starMaterial2 = new THREE.PointsMaterial({ color: 0xaaccff, size: 0.2, transparent: true, opacity: 0.6 });
-        const stars2 = new THREE.Points(starGeometry2, starMaterial2);
-        scene.add(stars2);
+        // CSS2DRenderer for simple text label (optional)
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0px';
+        labelRenderer.domElement.style.left = '0px';
+        labelRenderer.domElement.style.pointerEvents = 'none';
+        document.body.appendChild(labelRenderer.domElement);
 
-        // --- Earth Parameters ---
-        const earthRadius = 5.0;
-        const earthGeometry = new THREE.SphereGeometry(earthRadius, 128, 128);
-        
-        // High-quality Earth texture (diffuse map with clouds and atmosphere look)
-        const textureLoader = new THREE.TextureLoader();
-        const earthMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
-        const earthSpecularMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
-        const earthNormalMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg');
-        const cloudMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png');
-        
-        // Earth material with polished lighting
-        const earthMaterial = new THREE.MeshPhongMaterial({
-            map: earthMap,
-            specularMap: earthSpecularMap,
-            specular: new THREE.Color('grey'),
-            shininess: 5,
-            normalMap: earthNormalMap,
-            normalScale: new THREE.Vector2(1.2, 1.2)
-        });
-        
-        const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-        scene.add(earth);
-        
-        // Add semi-transparent cloud layer for extra realism
-        const cloudGeometry = new THREE.SphereGeometry(earthRadius + 0.02, 128, 128);
-        const cloudMaterial = new THREE.MeshPhongMaterial({
-            map: cloudMap,
-            transparent: true,
-            opacity: 0.12,
-            blending: THREE.AdditiveBlending
-        });
-        const clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
-        scene.add(clouds);
-        
-        // --- Lighting: Polished and dramatic ---
+        // --- Controls ---
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.autoRotate = false;
+        controls.enableZoom = true;
+        controls.zoomSpeed = 1.2;
+        controls.rotateSpeed = 1.0;
+        controls.target.set(0, 1.2, 0);
+
+        // --- Lighting System (Polished) ---
         // Ambient light for base illumination
-        const ambientLight = new THREE.AmbientLight(0x222222);
+        const ambientLight = new THREE.AmbientLight(0x404060, 0.65);
         scene.add(ambientLight);
         
-        // Main directional light (simulating sun)
-        const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
-        sunLight.position.set(10, 15, 5);
-        sunLight.castShadow = true;
-        sunLight.receiveShadow = false;
-        sunLight.shadow.mapSize.width = 1024;
-        sunLight.shadow.mapSize.height = 1024;
-        scene.add(sunLight);
+        // Main directional light (simulating sun / key light)
+        const mainLight = new THREE.DirectionalLight(0xfff5e6, 1.2);
+        mainLight.position.set(4, 5, 3);
+        mainLight.castShadow = true;
+        mainLight.receiveShadow = false;
+        mainLight.shadow.mapSize.width = 1024;
+        mainLight.shadow.mapSize.height = 1024;
+        mainLight.shadow.camera.near = 0.5;
+        mainLight.shadow.camera.far = 8;
+        mainLight.shadow.camera.left = -5;
+        mainLight.shadow.camera.right = 5;
+        mainLight.shadow.camera.top = 5;
+        mainLight.shadow.camera.bottom = -5;
+        scene.add(mainLight);
         
-        // Fill light from below to illuminate dark side slightly
-        const fillLight = new THREE.PointLight(0x4466cc, 0.25);
-        fillLight.position.set(0, -5, 0);
+        // Fill light from below and sides
+        const fillLight = new THREE.PointLight(0x88aaff, 0.35);
+        fillLight.position.set(1, 0.5, 2);
         scene.add(fillLight);
         
-        // Back rim light to enhance edges
-        const rimLight = new THREE.PointLight(0xffaa66, 0.4);
-        rimLight.position.set(-5, 3, -8);
+        // Rim/back light to highlight edges
+        const rimLight = new THREE.PointLight(0xffaa66, 0.5);
+        rimLight.position.set(-2, 1.8, -3);
         scene.add(rimLight);
         
-        // Additional soft fill from front
-        const frontFill = new THREE.PointLight(0x88aaff, 0.2);
-        frontFill.position.set(2, 1, 6);
-        scene.add(frontFill);
+        // Warm fill from the front-right
+        const warmFill = new THREE.PointLight(0xffcc88, 0.4);
+        warmFill.position.set(2, 1.2, 2.5);
+        scene.add(warmFill);
         
-        // --- Helper: Convert Lat/Lon (degrees) to Cartesian Vector3 (with altitude offset) ---
-        const degToRad = Math.PI / 180;
-        function latLonToVector3(lat, lon, radiusOffset = 0) {
-            const phi = (90 - lat) * degToRad;
-            const theta = lon * degToRad;
-            const r = earthRadius + radiusOffset;
-            const x = r * Math.sin(phi) * Math.cos(theta);
-            const y = r * Math.cos(phi);
-            const z = r * Math.sin(phi) * Math.sin(theta);
-            return new THREE.Vector3(x, y, z);
+        // Optional: subtle blue fill from left
+        const blueFill = new THREE.PointLight(0x88aaff, 0.25);
+        blueFill.position.set(-1.5, 1, 1.8);
+        scene.add(blueFill);
+        
+        // --- Environment: Simple curved floor and background elements ---
+        // Circular platform with shadow reception
+        const platformGeometry = new THREE.CylinderGeometry(2.2, 2.2, 0.1, 32);
+        const platformMaterial = new THREE.MeshStandardMaterial({ color: 0x2c2f36, roughness: 0.4, metalness: 0.1 });
+        const platform = new THREE.Mesh(platformGeometry, platformMaterial);
+        platform.position.set(0, -0.6, 0);
+        platform.receiveShadow = true;
+        platform.castShadow = true;
+        scene.add(platform);
+        
+        // Reflective subtle grid helper (aesthetic)
+        const gridHelper = new THREE.GridHelper(6, 20, 0x88aaff, 0x335588);
+        gridHelper.position.y = -0.55;
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.25;
+        scene.add(gridHelper);
+        
+        // Simple background studio spheres / floating particles? optional clean look
+        // Add a few floating dust particles to enhance depth
+        const particleCount = 400;
+        const particleGeometry = new THREE.BufferGeometry();
+        const particlePositions = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount; i++) {
+            particlePositions[i*3] = (Math.random() - 0.5) * 12;
+            particlePositions[i*3+1] = (Math.random() - 0.5) * 4 + 1;
+            particlePositions[i*3+2] = (Math.random() - 0.5) * 10 - 3;
         }
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+        const particleMaterial = new THREE.PointsMaterial({ color: 0x88aaff, size: 0.03, transparent: true, opacity: 0.4 });
+        const particles = new THREE.Points(particleGeometry, particleMaterial);
+        scene.add(particles);
         
-        // --- Aircraft Creation: Detailed low-poly model (wing + body + tail) ---
-        function createAircraft(color, emissiveIntensity = 0.15) {
-            const group = new THREE.Group();
-            
-            // Fuselage (elongated capsule using cylinder + cone)
-            const bodyGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.55, 8);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: color, metalness: 0.7, roughness: 0.3, emissive: color, emissiveIntensity: emissiveIntensity });
-            const body = new THREE.Mesh(bodyGeo, bodyMat);
-            body.rotation.x = Math.PI / 2;
-            body.position.z = 0;
-            group.add(body);
-            
-            // Nose cone
-            const noseGeo = new THREE.ConeGeometry(0.11, 0.25, 8);
-            const noseMat = new THREE.MeshStandardMaterial({ color: color, metalness: 0.8 });
-            const nose = new THREE.Mesh(noseGeo, noseMat);
-            nose.position.z = 0.32;
-            nose.rotation.x = 0;
-            group.add(nose);
-            
-            // Wings (swept wings)
-            const wingGeo = new THREE.BoxGeometry(0.55, 0.05, 0.2);
-            const wingMat = new THREE.MeshStandardMaterial({ color: color, metalness: 0.6 });
-            const wings = new THREE.Mesh(wingGeo, wingMat);
-            wings.position.set(0, 0, 0);
-            wings.rotation.z = 0;
-            group.add(wings);
-            
-            // Wing tips (small vertical stabilizers style)
-            const tipGeo = new THREE.BoxGeometry(0.08, 0.12, 0.08);
-            const leftTip = new THREE.Mesh(tipGeo, wingMat);
-            leftTip.position.set(-0.3, 0.02, 0.05);
-            const rightTip = new THREE.Mesh(tipGeo, wingMat);
-            rightTip.position.set(0.3, 0.02, 0.05);
-            group.add(leftTip);
-            group.add(rightTip);
-            
-            // Tail fin (vertical stabilizer)
-            const tailGeo = new THREE.ConeGeometry(0.09, 0.2, 4);
-            const tailMat = new THREE.MeshStandardMaterial({ color: color, metalness: 0.5 });
-            const tail = new THREE.Mesh(tailGeo, tailMat);
-            tail.position.set(0, 0.1, -0.28);
-            tail.rotation.x = 0;
-            group.add(tail);
-            
-            // Horizontal stabilizers
-            const hTailGeo = new THREE.BoxGeometry(0.28, 0.05, 0.12);
-            const hTail = new THREE.Mesh(hTailGeo, wingMat);
-            hTail.position.set(0, 0.02, -0.33);
-            group.add(hTail);
-            
-            // Add a subtle glowing beacon
-            const beaconGeo = new THREE.SphereGeometry(0.045, 6, 6);
-            const beaconMat = new THREE.MeshStandardMaterial({ color: 0xff3300, emissive: 0xff2200, emissiveIntensity: 0.6 });
-            const beacon = new THREE.Mesh(beaconGeo, beaconMat);
-            beacon.position.set(0, 0.1, 0.15);
-            group.add(beacon);
-            
-            return group;
-        }
+        // --- Create the Man (Stylized humanoid) ---
+        const manGroup = new THREE.Group();
         
-        // --- Spherical Linear Interpolation (SLERP) for smooth great-circle motion ---
-        function slerpVectors(v0, v1, t) {
-            // v0 and v1 are unit vectors (normalized)
-            const dot = v0.dot(v1);
-            // clamp due to floating errors
-            const cosTheta = Math.min(1, Math.max(-1, dot));
-            const theta = Math.acos(cosTheta);
-            if (theta < 1e-6) return v0.clone().lerp(v1, t).normalize();
-            const sinTheta = Math.sin(theta);
-            const a = Math.sin((1 - t) * theta) / sinTheta;
-            const b = Math.sin(t * theta) / sinTheta;
-            return new THREE.Vector3().addScaledVector(v0, a).addScaledVector(v1, b).normalize();
-        }
+        // Colors
+        const skinColor = 0xfdd7a8;
+        const shirtColor = 0x3a6ea5;   // nice blue shirt
+        const pantsColor = 0x2c3e4e;
+        const shoeColor = 0x4a3b32;
         
-        // --- Define Flight Routes (waypoints as [lat, lon] in degrees) ---
-        // Route 1: Equatorial Express - circles the globe along equator
-        const equatorialWaypoints = [
-            [0, -160], [0, -100], [0, -40], [0, 20], [0, 80], [0, 140], [0, 200]
-        ];
-        // Route 2: Polar Pioneer - from Arctic to Antarctic via Greenwich meridian
-        const polarWaypoints = [
-            [82, -10], [65, -15], [45, -5], [20, 0], [0, 0], [-20, 0], [-45, 0], [-65, -5], [-82, -10]
-        ];
-        // Route 3: Transatlantic - New York to London to Paris to Moscow (busy corridor)
-        const atlanticWaypoints = [
-            [40.7, -74.0],   // NYC
-            [45.5, -45.0],   // mid atlantic
-            [51.5, -0.1],    // London
-            [48.9, 2.35],    // Paris
-            [55.75, 37.62]   // Moscow
-        ];
-        // Route 4: Pacific & Asia loop - Tokyo to Shanghai to Sydney to LA
-        const pacificWaypoints = [
-            [35.68, 139.76],  // Tokyo
-            [31.23, 121.47],  // Shanghai
-            [13.73, 100.50],  // Bangkok
-            [-33.87, 151.21], // Sydney
-            [34.05, -118.24], // Los Angeles
-            [21.3, -157.85]   // Honolulu (added for smooth arc)
-        ];
-        // Route 5: Southern Scenic - across South America, Africa, Australia
-        const southernWaypoints = [
-            [-23.55, -46.63],  // São Paulo
-            [-34.6, -58.38],   // Buenos Aires
-            [-29.0, 27.5],     // South Africa
-            [-26.2, 28.0],     // Johannesburg area
-            [-31.95, 115.86],  // Perth
-            [-33.87, 151.21]   // Sydney
-        ];
+        // 1. Torso (box)
+        const torsoGeo = new THREE.BoxGeometry(0.7, 0.9, 0.45);
+        const torsoMat = new THREE.MeshStandardMaterial({ color: shirtColor, roughness: 0.3, metalness: 0.1 });
+        const torso = new THREE.Mesh(torsoGeo, torsoMat);
+        torso.position.set(0, 0.45, 0);
+        torso.castShadow = true;
+        torso.receiveShadow = true;
+        manGroup.add(torso);
         
-        // --- Precompute unit vectors for each route (radius = 1) ---
-        function prepareRoute(waypoints) {
-            return waypoints.map(wp => {
-                const [lat, lon] = wp;
-                const pos = latLonToVector3(lat, lon, 0);
-                return pos.clone().normalize(); // unit vector
-            });
-        }
+        // 2. Head (sphere)
+        const headGeo = new THREE.SphereGeometry(0.38, 32, 32);
+        const headMat = new THREE.MeshStandardMaterial({ color: skinColor, roughness: 0.25 });
+        const head = new THREE.Mesh(headGeo, headMat);
+        head.position.set(0, 1.05, 0);
+        head.castShadow = true;
+        head.receiveShadow = true;
+        manGroup.add(head);
         
-        const routesData = [
-            { waypoints: equatorialWaypoints, speed: 0.22, color: 0x44aaff, name: "Equator Express", altitude: 0.12, emissive: 0.2 },
-            { waypoints: polarWaypoints, speed: 0.18, color: 0xff66cc, name: "Polar Pioneer", altitude: 0.13, emissive: 0.18 },
-            { waypoints: atlanticWaypoints, speed: 0.25, color: 0xffaa44, name: "Atlantic Jet", altitude: 0.11, emissive: 0.22 },
-            { waypoints: pacificWaypoints, speed: 0.20, color: 0x66ff66, name: "Pacific Voyager", altitude: 0.12, emissive: 0.16 },
-            { waypoints: southernWaypoints, speed: 0.19, color: 0xff8844, name: "Southern Cross", altitude: 0.12, emissive: 0.19 }
-        ];
+        // Hair (simple dark hemisphere)
+        const hairGeo = new THREE.SphereGeometry(0.4, 24, 24, 0, Math.PI * 2, 0, Math.PI / 2.5);
+        const hairMat = new THREE.MeshStandardMaterial({ color: 0x2c1e12, roughness: 0.6 });
+        const hair = new THREE.Mesh(hairGeo, hairMat);
+        hair.position.set(0, 1.18, 0.05);
+        hair.castShadow = true;
+        manGroup.add(hair);
         
-        // Build route objects with precomputed unit vectors and segment lengths (angular distances for t scaling)
-        class FlightRoute {
-            constructor(waypointsLatLon, speed, color, altitude, emissive) {
-                this.rawPoints = waypointsLatLon;
-                this.unitVectors = prepareRoute(waypointsLatLon);
-                this.segmentCount = this.unitVectors.length - 1;
-                this.speed = speed;          // segments per second
-                this.color = color;
-                this.altitude = altitude;
-                this.emissive = emissive;
-                // precompute angular distances for each segment (to make speed consistent along path)
-                this.segmentAngles = [];
-                for (let i = 0; i < this.segmentCount; i++) {
-                    const dot = this.unitVectors[i].dot(this.unitVectors[i+1]);
-                    const angle = Math.acos(Math.min(1, Math.max(-1, dot)));
-                    this.segmentAngles.push(angle);
-                }
-                // total cumulative angle
-                this.totalAngle = this.segmentAngles.reduce((a,b) => a+b, 0);
+        // 3. Legs (cylinders)
+        const legGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.8, 8);
+        const legMat = new THREE.MeshStandardMaterial({ color: pantsColor, roughness: 0.5 });
+        
+        const leftLeg = new THREE.Mesh(legGeo, legMat);
+        leftLeg.position.set(-0.22, 0.05, 0);
+        leftLeg.castShadow = true;
+        manGroup.add(leftLeg);
+        
+        const rightLeg = new THREE.Mesh(legGeo, legMat);
+        rightLeg.position.set(0.22, 0.05, 0);
+        rightLeg.castShadow = true;
+        manGroup.add(rightLeg);
+        
+        // Shoes
+        const shoeGeo = new THREE.BoxGeometry(0.22, 0.12, 0.32);
+        const shoeMat = new THREE.MeshStandardMaterial({ color: shoeColor, roughness: 0.7 });
+        const leftShoe = new THREE.Mesh(shoeGeo, shoeMat);
+        leftShoe.position.set(-0.22, -0.32, 0.08);
+        leftShoe.castShadow = true;
+        const rightShoe = new THREE.Mesh(shoeGeo, shoeMat);
+        rightShoe.position.set(0.22, -0.32, 0.08);
+        rightShoe.castShadow = true;
+        manGroup.add(leftShoe);
+        manGroup.add(rightShoe);
+        
+        // 4. Arms (cylinders)
+        const armGeo = new THREE.CylinderGeometry(0.11, 0.09, 0.7, 8);
+        const armMat = new THREE.MeshStandardMaterial({ color: shirtColor, roughness: 0.4 });
+        
+        // Left arm (will be rotated to hold laptop)
+        const leftArm = new THREE.Mesh(armGeo, armMat);
+        leftArm.position.set(-0.48, 0.85, 0);
+        leftArm.castShadow = true;
+        manGroup.add(leftArm);
+        
+        // Right arm
+        const rightArm = new THREE.Mesh(armGeo, armMat);
+        rightArm.position.set(0.48, 0.85, 0);
+        rightArm.castShadow = true;
+        manGroup.add(rightArm);
+        
+        // Hands (simple spheres)
+        const handMat = new THREE.MeshStandardMaterial({ color: skinColor, roughness: 0.3 });
+        const leftHand = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), handMat);
+        leftHand.position.set(-0.78, 0.85, 0.25);
+        leftHand.castShadow = true;
+        const rightHand = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), handMat);
+        rightHand.position.set(0.78, 0.85, 0.25);
+        rightHand.castShadow = true;
+        manGroup.add(leftHand);
+        manGroup.add(rightHand);
+        
+        // Add a simple belt for detail
+        const beltGeo = new THREE.BoxGeometry(0.75, 0.08, 0.5);
+        const beltMat = new THREE.MeshStandardMaterial({ color: 0x8B5A2B, metalness: 0.3 });
+        const belt = new THREE.Mesh(beltGeo, beltMat);
+        belt.position.set(0, 0.12, 0.1);
+        belt.castShadow = true;
+        manGroup.add(belt);
+        
+        scene.add(manGroup);
+        
+        // --- Create the White Laptop (with sleek white finish) ---
+        const laptopGroup = new THREE.Group();
+        
+        // Laptop Base (main body) – white
+        const baseGeo = new THREE.BoxGeometry(0.85, 0.08, 0.65);
+        const whiteMat = new THREE.MeshStandardMaterial({ color: 0xf5f5f7, roughness: 0.25, metalness: 0.45, emissive: 0x222222, emissiveIntensity: 0.05 });
+        const laptopBase = new THREE.Mesh(baseGeo, whiteMat);
+        laptopBase.castShadow = true;
+        laptopBase.receiveShadow = true;
+        laptopBase.position.set(0, 0, 0);
+        laptopGroup.add(laptopBase);
+        
+        // Keyboard area subtle detail (dark keys inset)
+        const keyMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, roughness: 0.5, metalness: 0.1 });
+        const keyAreaGeo = new THREE.BoxGeometry(0.70, 0.02, 0.45);
+        const keyArea = new THREE.Mesh(keyAreaGeo, keyMat);
+        keyArea.position.set(0, 0.05, 0.03);
+        keyArea.castShadow = false;
+        laptopGroup.add(keyArea);
+        
+        // Trackpad
+        const trackpadGeo = new THREE.BoxGeometry(0.22, 0.02, 0.28);
+        const trackpadMat = new THREE.MeshStandardMaterial({ color: 0xccccdd, roughness: 0.3, metalness: 0.2 });
+        const trackpad = new THREE.Mesh(trackpadGeo, trackpadMat);
+        trackpad.position.set(0.28, 0.05, -0.15);
+        laptopGroup.add(trackpad);
+        
+        // Laptop Screen (hinged, slightly tilted back)
+        const screenGroup = new THREE.Group();
+        const screenMat = new THREE.MeshStandardMaterial({ color: 0xf0f0f5, roughness: 0.2, metalness: 0.6 });
+        const screenBezelGeo = new THREE.BoxGeometry(0.78, 0.55, 0.025);
+        const screenBezel = new THREE.Mesh(screenBezelGeo, screenMat);
+        screenBezel.castShadow = true;
+        screenGroup.add(screenBezel);
+        
+        // Display panel (glowing slightly to show screen)
+        const displayMat = new THREE.MeshStandardMaterial({ color: 0x88aaff, emissive: 0x4488ff, emissiveIntensity: 0.35, transparent: true, opacity: 0.9 });
+        const displayGeo = new THREE.BoxGeometry(0.68, 0.44, 0.01);
+        const display = new THREE.Mesh(displayGeo, displayMat);
+        display.position.set(0, 0, 0.018);
+        display.castShadow = false;
+        screenGroup.add(display);
+        
+        // Add subtle webcam dot
+        const webcamGeo = new THREE.SphereGeometry(0.022, 8, 8);
+        const webcamMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.8 });
+        const webcam = new THREE.Mesh(webcamGeo, webcamMat);
+        webcam.position.set(0, 0.22, 0.04);
+        screenGroup.add(webcam);
+        
+        // Hinge effect: rotate screen back by about 100 degrees for realistic laptop open pose
+        screenGroup.rotation.x = -0.95; // tilt screen back
+        screenGroup.position.set(0, 0.074, -0.28);
+        laptopGroup.add(screenGroup);
+        
+        // Add subtle white Apple-like logo on lid (just decoration)
+        const logoMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.8 });
+        const logoGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.01, 12);
+        const logo = new THREE.Mesh(logoGeo, logoMat);
+        logo.rotation.x = Math.PI / 2;
+        logo.position.set(0, 0.155, 0.041);
+        screenGroup.add(logo);
+        
+        // Position Laptop in front of the man, held by hands
+        laptopGroup.position.set(0, 0.92, 0.68);
+        laptopGroup.castShadow = true;
+        laptopGroup.receiveShadow = true;
+        scene.add(laptopGroup);
+        
+        // --- Adjust Arm Rotations to realistically hold the laptop ---
+        // Left arm: rotate to reach laptop side
+        leftArm.rotation.z = -0.45;
+        leftArm.rotation.x = 0.35;
+        // Right arm: symmetric hold
+        rightArm.rotation.z = 0.45;
+        rightArm.rotation.x = 0.35;
+        
+        // Position hands exactly at laptop's front corners (fine-tuned)
+        leftHand.position.set(-0.47, 0.88, 0.59);
+        rightHand.position.set(0.47, 0.88, 0.59);
+        
+        // Optionally add a subtle glow around the laptop (white aura)
+        const auraGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+        const auraMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.06, side: THREE.BackSide });
+        const aura = new THREE.Mesh(auraGeometry, auraMaterial);
+        aura.position.copy(laptopGroup.position);
+        scene.add(aura);
+        
+        // --- Add a simple CSS2D label for "White Laptop" (floating text) ---
+        const labelDiv = document.createElement('div');
+        labelDiv.textContent = '💻 White Laptop';
+        labelDiv.style.color = '#ffffff';
+        labelDiv.style.fontSize = '14px';
+        labelDiv.style.fontWeight = '500';
+        labelDiv.style.textShadow = '1px 1px 0px rgba(0,0,0,0.5)';
+        labelDiv.style.backgroundColor = 'rgba(0,0,0,0.5)';
+        labelDiv.style.padding = '2px 10px';
+        labelDiv.style.borderRadius = '20px';
+        labelDiv.style.backdropFilter = 'blur(4px)';
+        labelDiv.style.fontFamily = 'sans-serif';
+        labelDiv.style.pointerEvents = 'none';
+        const labelObj = new CSS2DObject(labelDiv);
+        labelObj.position.set(0, 1.25, 0.7);
+        scene.add(labelObj);
+        
+        // Add a floating name tag for the man (optional)
+        const nameDiv = document.createElement('div');
+        nameDiv.textContent = '👨 Alex';
+        nameDiv.style.color = '#eef';
+        nameDiv.style.fontSize = '12px';
+        nameDiv.style.backgroundColor = 'rgba(0,0,0,0.45)';
+        nameDiv.style.padding = '2px 10px';
+        nameDiv.style.borderRadius = '20px';
+        nameDiv.style.fontFamily = 'sans-serif';
+        const nameLabel = new CSS2DObject(nameDiv);
+        nameLabel.position.set(0, 1.45, 0);
+        scene.add(nameLabel);
+        
+        // --- Simple Animation Loop: Slight idle floating particles and subtle laptop screen pulse ---
+        let time = 0;
+        
+        // Also a tiny rotation animation for the laptop to make it feel alive? not necessary but nice
+        // Just add a gentle bob to aura and particles
+        function animate() {
+            const deltaTime = 1/60; // approx for smoothness
+            time += 0.016;
+            
+            // Gentle floating aura pulse
+            const scale = 1 + Math.sin(time * 2.5) * 0.02;
+            aura.scale.set(scale, scale, scale);
+            
+            // Screen emissive intensity pulse (modern laptop look)
+            if (display.material) {
+                const intensity = 0.35 + Math.sin(time * 3) * 0.08;
+                display.material.emissiveIntensity = intensity;
             }
             
-            // Get position along route at normalized t (0-1) using angular parameter interpolation
-            getPositionAtT(t) {
-                if (t <= 0) return this.unitVectors[0];
-                if (t >= 1) return this.unitVectors[this.unitVectors.length-1];
-                // find which segment based on angular distance proportion
-                const targetAngle = t * this.totalAngle;
-                let cumAngle = 0;
-                for (let i = 0; i < this.segmentCount; i++) {
-                    const segAngle = this.segmentAngles[i];
-                    if (targetAngle <= cumAngle + segAngle) {
-                        const localT = (targetAngle - cumAngle) / segAngle;
-                        const v0 = this.unitVectors[i];
-                        const v1 = this.unitVectors[i+1];
-                        const interpVec = slerpVectors(v0, v1, localT);
-                        return interpVec;
-                    }
-                    cumAngle += segAngle;
-                }
-                return this.unitVectors[this.unitVectors.length-1];
-            }
+            // Slight bounce particles
+            particles.rotation.y = time * 0.05;
+            particles.rotation.x = Math.sin(time * 0.2) * 0.1;
+            
+            // Update controls and render
+            controls.update(); // update orbit controls
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+            
+            requestAnimationFrame(animate);
         }
         
-        // --- Aircraft instances ---
-        const aircrafts = [];
-        const routes = [];
-        
-        // Create route instances and corresponding aircraft meshes
-        routesData.forEach((data, idx) => {
-            const route = new FlightRoute(data.waypoints, data.speed, data.color, data.altitude, data.emissive);
-            routes.push(route);
-            
-            const aircraftGroup = createAircraft(data.color, data.emissive);
-            scene.add(aircraftGroup);
-            
-            // Random starting phase offset between 0 and 1
-            const phase = Math.random();
-            let t = phase;
-            
-            aircrafts.push({
-                group: aircraftGroup,
-                route: route,
-                t: t,
-                speed: data.speed,
-                altitude: data.altitude
-            });
-        });
-        
-        // --- Additional auxiliary aircraft: add 2 more distinctive routes for richer air traffic ---
-        // Custom high-speed intercontinental route: Dubai -> Delhi -> Singapore
-        const expressWaypoints = [
-            [25.20, 55.27],   // Dubai
-            [28.61, 77.23],   // Delhi
-            [1.35, 103.87],   // Singapore
-            [19.07, 72.88],   // Mumbai (loop back creative)
-            [25.20, 55.27]
-        ];
-        const expressRoute = new FlightRoute(expressWaypoints, 0.27, 0xff55aa, 0.12, 0.25);
-        const expressJet = createAircraft(0xff55aa, 0.25);
-        scene.add(expressJet);
-        aircrafts.push({
-            group: expressJet,
-            route: expressRoute,
-            t: Math.random(),
-            speed: 0.27,
-            altitude: 0.12
-        });
-        routes.push(expressRoute);
-        
-        // Route: Nordic lights route (Scandinavia to Iceland to Greenland)
-        const nordicWaypoints = [
-            [59.33, 18.07],   // Stockholm
-            [64.15, -21.93],  // Reykjavik
-            [66.0, -40.0],    // Mid Greenland
-            [60.0, -70.0],    // Eastern Canada
-            [45.5, -73.6]     // Montreal for interest
-        ];
-        const nordicRoute = new FlightRoute(nordicWaypoints, 0.21, 0x88ddff, 0.115, 0.2);
-        const nordicJet = createAircraft(0x88ddff, 0.2);
-        scene.add(nordicJet);
-        aircrafts.push({
-            group: nordicJet,
-            route: nordicRoute,
-            t: Math.random(),
-            speed: 0.21,
-            altitude: 0.115
-        });
-        routes.push(nordicRoute);
-        
-        // --- Animation & Smooth Interpolation Loop (time-delta based) ---
-        let lastTime = performance.now();
-        
-        // Helper to update each aircraft's position based on route and t
-        function updateAircraftPositions(deltaTime) {
-            aircrafts.forEach(aircraft => {
-                // increment t based on speed (segments per second)
-                // deltaTime in seconds, speed factor ensures smooth constant angular speed
-                let increment = aircraft.speed * deltaTime;
-                let newT = aircraft.t + increment;
-                if (newT > 1.0) {
-                    newT = newT - 1.0;  // loop continuously (endless flight)
-                }
-                aircraft.t = newT;
-                
-                // Get unit direction vector for current t
-                const unitPos = aircraft.route.getPositionAtT(aircraft.t);
-                // Scale to earth radius + altitude
-                const finalPos = unitPos.clone().multiplyScalar(earthRadius + aircraft.altitude);
-                aircraft.group.position.copy(finalPos);
-                
-                // --- Advanced: Orient aircraft to face direction of motion (smooth heading) ---
-                // Compute a tiny delta t ahead for direction vector
-                let t2 = aircraft.t + 0.008;
-                if (t2 > 1.0) t2 = t2 - 1.0;
-                const futureUnit = aircraft.route.getPositionAtT(t2);
-                const futurePos = futureUnit.clone().multiplyScalar(earthRadius + aircraft.altitude);
-                const direction = futurePos.clone().sub(finalPos).normalize();
-                
-                if (direction.length() > 0.001) {
-                    // Create quaternion to align aircraft's forward (positive Z) with direction
-                    const quaternion = new THREE.Quaternion();
-                    const forward = new THREE.Vector3(0, 0, 1);
-                    quaternion.setFromUnitVectors(forward, direction);
-                    aircraft.group.quaternion.copy(quaternion);
-                    
-                    // Additional slight banking using roll (optional: tilt based on cross product)
-                    // Add a slight upward tilt for visual appeal
-                    const upRef = new THREE.Vector3(0, 1, 0);
-                    const right = upRef.clone().cross(direction).normalize();
-                    const correctedUp = direction.clone().cross(right).normalize();
-                    const bankQuat = new THREE.Quaternion().setFromUnitVectors(upRef, correctedUp);
-                    aircraft.group.quaternion.multiplyQuaternions(bankQuat, quaternion);
-                }
-                
-                // Add a subtle bounce/ engine glow effect: pulsate beacon light
-                if (aircraft.group.children.some(c => c.material && c.material.emissiveIntensity)) {
-                    const pulse = 0.5 + Math.sin(Date.now() * 0.012) * 0.25;
-                    aircraft.group.children.forEach(child => {
-                        if (child.material && child.material.emissiveIntensity && child.material.color.getHex() === 0xff3300) {
-                            child.material.emissiveIntensity = 0.4 + pulse * 0.3;
-                        }
-                    });
-                }
-            });
-        }
-        
-        // --- Gently rotate clouds for subtle movement ---
-        let cloudRotationSpeed = 0.0008;
-        
-        // --- Optional: subtle Earth's atmosphere glow (ring effect) - Just a nice touch ---
-        const atmosphereGeometry = new THREE.SphereGeometry(earthRadius + 0.03, 64, 64);
-        const atmosphereMaterial = new THREE.MeshPhongMaterial({
-            color: 0x88aaff,
-            transparent: true,
-            opacity: 0.08,
-            side: THREE.BackSide
-        });
-        const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
-        scene.add(atmosphere);
-        
-        // --- Simple animated star twinkling effect by rotating starfield very slowly ---
-        let starRotationSpeed = 0.0001;
+        // Optional: Add a reflective environment sphere? Not needed for performance, but simple.
         
         // --- Responsive Handling ---
         window.addEventListener('resize', onWindowResize, false);
@@ -520,47 +433,14 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
         }
         
-        // --- Render Loop with smooth time delta ---
-        function animate() {
-            const now = performance.now();
-            let delta = Math.min(0.033, (now - lastTime) / 1000);
-            if (delta <= 0) { delta = 0.016; }
-            lastTime = now;
-            
-            // Update aircraft positions with smooth interpolation (delta-time independent)
-            updateAircraftPositions(delta);
-            
-            // Rotate cloud layer for atmospheric movement
-            clouds.rotation.y += 0.0006;
-            // subtle rotation of stars background for immersive effect
-            stars.rotation.y += 0.00005;
-            stars2.rotation.x += 0.00003;
-            
-            // Update directional light position to simulate sun angle (optional slight movement)
-            // This gives dynamic feel but not necessary for core visuals
-            const time = Date.now() * 0.0005;
-            sunLight.position.x = 12 * Math.cos(time * 0.1);
-            sunLight.position.z = 8 * Math.sin(time * 0.07);
-            
-            // Update rim light for dramatic shifts
-            rimLight.intensity = 0.4 + Math.sin(Date.now() * 0.002) * 0.1;
-            
-            // Update controls and render scene
-            controls.update(); // only needed if damping or autoRotate, but we call for smoothness
-            renderer.render(scene, camera);
-            requestAnimationFrame(animate);
-        }
-        
-        // Start animation
+        // Start the animation loop
         animate();
         
-        // Small console log for production readiness
-        console.log('3D Flight Visualizer Ready | Real-time smooth interpolation | ' + aircrafts.length + ' active aircraft');
-        
-        // Add a very faint grid helper optionally for spatial reference? Not needed for aesthetics but invisible in space.
-        // To maintain clean look, we skip.
+        // Small console log to confirm
+        console.log('3D Scene Ready: Man with White Laptop | Fully interactive');
     </script>
 </body>
 </html>
