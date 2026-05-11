@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
   <html lang="id">
   <head>
     <meta charset="UTF-8" />
@@ -561,8 +561,6 @@
   </div>
 
   <script>
-  const {jsPDF}=window.jspdf;
-
   /* ━━ BG: Elegant moving lines ━━ */
   (()=>{
     const cv=document.getElementById('bg-canvas');
@@ -781,47 +779,106 @@
   }
   addEventListener('resize',scaleFrame);
 
+  /* ━━ DOWNLOAD: html2canvas + jsPDF → langsung download .pdf ━━ */
   async function doDL(){
     const html=codeIn.value.trim();if(!html)return;
     if(!hasPrev)doPreview();
+
     const all=[btnDl,btnPrev,sheetDl,sheetPrev];
     all.forEach(b=>b.disabled=true);
     dlLbl.textContent='Memproses…';sheetDlLbl.textContent='Memproses…';
     showProg(5,'Menyiapkan konten…');
+
     try{
-      rhost.innerHTML='';
-      const d=new DOMParser().parseFromString(html,'text/html');
-      const styles=Array.from(d.querySelectorAll('style')).map(s=>s.textContent).join('\n');
-      const cvEl=d.getElementById('cv-container')||d.body;
-      const se=document.createElement('style');
-      se.textContent=`#rhost *,#rhost *::before,#rhost *::after{box-sizing:border-box}#rhost .no-print{display:none!important}${styles}#rhost #cv-container{margin:0!important;box-shadow:none!important;max-width:100%!important;width:100%!important;padding:15mm 20mm!important;}`;
-      rhost.appendChild(se);rhost.insertAdjacentHTML('beforeend',cvEl.outerHTML);
-      showProg(25,'Render…');await tick(120);
-      const target=rhost.querySelector('#cv-container')||rhost.children[1];
-      showProg(42,'Screenshot…');
-      const canvas=await html2canvas(target,{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#fff',logging:false,width:794,windowWidth:794});
-      showProg(75,'Buat PDF…');
+      // Buat iframe tersembunyi untuk render HTML CV
+      const iframe=document.createElement('iframe');
+      iframe.style.cssText='position:fixed;left:-9999px;top:0;width:794px;height:1200px;border:none;background:#fff;z-index:-999;visibility:hidden;';
+      document.body.appendChild(iframe);
+
+      // Tunggu iframe load sempurna
+      await new Promise(resolve=>{
+        iframe.addEventListener('load',()=>setTimeout(resolve,600));
+        iframe.srcdoc=html;
+        setTimeout(resolve,4000); // fallback timeout
+      });
+
+      showProg(28,'Render halaman…');
+      await tick(200);
+
+      const iDoc=iframe.contentDocument||iframe.contentWindow.document;
+      const target=iDoc.getElementById('cv-container')||iDoc.body;
+
+      // Paksa lebar 794px agar hasil sesuai A4
+      target.style.maxWidth='794px';
+      target.style.width='794px';
+      target.style.margin='0';
+      target.style.boxShadow='none';
+
+      showProg(48,'Screenshot…');
+      const canvas=await html2canvas(target,{
+        scale:2,
+        useCORS:true,
+        allowTaint:true,
+        backgroundColor:'#ffffff',
+        logging:false,
+        width:794,
+        windowWidth:794,
+        scrollX:0,scrollY:0,
+      });
+
+      document.body.removeChild(iframe);
+
+      showProg(72,'Buat PDF…');
+      const {jsPDF}=window.jspdf;
       const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-      const A4W=210,A4H=297,pH=Math.floor((A4H/A4W)*canvas.width);
+      const A4W=210,A4H=297;
+      const pagePixH=Math.floor((A4H/A4W)*canvas.width);
       let yOff=0,pg=0;
+
       while(yOff<canvas.height){
         if(pg>0)pdf.addPage();
-        const sH=Math.min(pH,canvas.height-yOff);
-        const pc=document.createElement('canvas');pc.width=canvas.width;pc.height=pH;
-        const cx2=pc.getContext('2d');cx2.fillStyle='#fff';cx2.fillRect(0,0,pc.width,pc.height);
-        cx2.drawImage(canvas,0,yOff,canvas.width,sH,0,0,canvas.width,sH);
-        pdf.addImage(pc.toDataURL('image/png'),'PNG',0,0,A4W,A4H);
-        yOff+=pH;pg++;
+        const sliceH=Math.min(pagePixH,canvas.height-yOff);
+        const pc=document.createElement('canvas');
+        pc.width=canvas.width;pc.height=pagePixH;
+        const ctx=pc.getContext('2d');
+        ctx.fillStyle='#fff';ctx.fillRect(0,0,pc.width,pc.height);
+        ctx.drawImage(canvas,0,yOff,canvas.width,sliceH,0,0,canvas.width,sliceH);
+        pdf.addImage(pc.toDataURL('image/jpeg',0.97),'JPEG',0,0,A4W,A4H);
+        yOff+=pagePixH;pg++;
       }
-      showProg(96,'Menyimpan…');await tick(80);
-      pdf.save('CV.pdf');showProg(100,'✓ Selesai!');showToast('PDF berhasil didownload! 🎉');
-      setTimeout(()=>{hideProg();all.forEach(b=>b.disabled=false);dlLbl.textContent='Download PDF';sheetDlLbl.textContent='Download PDF →';},2200);
+
+      showProg(95,'Menyimpan…');
+      await tick(100);
+
+      const isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if(isMobile){
+        // Mobile: buka blob PDF di tab baru (bisa disimpan dari sana)
+        const blobUrl=pdf.output('bloburl');
+        window.open(blobUrl,'_blank');
+        showToast('PDF terbuka — tekan tahan lalu Simpan 🎉');
+      }else{
+        // Desktop: langsung download
+        pdf.save('CV_Gabriel.pdf');
+        showToast('PDF berhasil didownload! 🎉');
+      }
+
+      showProg(100,'✓ Selesai!');
+      setTimeout(()=>{
+        hideProg();
+        all.forEach(b=>b.disabled=false);
+        dlLbl.textContent='Download PDF';
+        sheetDlLbl.textContent='Download PDF →';
+      },2200);
+
     }catch(err){
-      console.error(err);hideProg();all.forEach(b=>b.disabled=false);
+      console.error(err);
+      hideProg();
+      all.forEach(b=>b.disabled=false);
       dlLbl.textContent='Download PDF';sheetDlLbl.textContent='Download PDF →';
-      alert('Gagal: '+err.message);
-    }finally{rhost.innerHTML='';}
+      showToast('Gagal: '+err.message);
+    }
   }
+
   function doClear(){
     codeIn.value='';tChars.textContent='0';syncBtns(false);
     fWrap.classList.remove('show');tEmpty.style.display='';
@@ -836,4 +893,4 @@
   function hideProg(){tProg.classList.remove('show');tProgB.style.width='0%'}
   </script>
   </body>
-  </html> 
+  </html>
